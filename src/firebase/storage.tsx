@@ -11,30 +11,31 @@ const firebaseConfig = {
     measurementId: "G-X4S0NFGFK4"
   };
 
-export async function createVideo (video: any){
+export async function createVideo (title: string, data: any){
   try {
     const app = initializeApp(firebaseConfig);
+    
     const storage = getStorage(app);
-    const storageRef = ref(storage, `video/${video.name}`);
-    await uploadBytes(storageRef, video);
+    const storageRef = ref(storage, `videos/${title}/${data.name}`);
+    await uploadBytes(storageRef, data);
     const downloadUrl = await getDownloadURL(storageRef);
     return downloadUrl;
   } catch (error: any) {
-    window.alert("Erro ao fazer upload da midia: " + error.message);
+    window.alert("Erro ao fazer upload da midia video: " + error.message);
     return false;
   }
 };
 
-export async function createImage (image: any){
+export async function createImage (title: string, data: any){
   try {
     const app = initializeApp(firebaseConfig);
     const storage = getStorage(app);
-    const storageRef = ref(storage, `image/${image.name}`);
-    await uploadBytes(storageRef, image);
+    const storageRef = ref(storage, `images/${title}/${data.name}`);
+    await uploadBytes(storageRef, data);
     const downloadUrl = await getDownloadURL(storageRef);
     return downloadUrl;
   } catch (error: any) {
-    window.alert("Erro ao fazer upload da midia: " + error.message);
+    window.alert("Erro ao fazer upload da midia imagem: " + error.message);
     return false;
   }
 };
