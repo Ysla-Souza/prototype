@@ -81,7 +81,6 @@ export default function Media() {
   };
 
   const saveImage = () => {
-    console.log(provImage);
     if(provImage || provImage !== ''){
       setData({
         ...data,
@@ -371,7 +370,6 @@ export default function Media() {
         />
         <button type="button" onClick={() => {
           const findItem = data.developers.find((dev: any) => dev === provDev);
-          console.log(findItem);
           if (findItem) {
             window.alert('Desenvolvedor já inserido!')
           } else {

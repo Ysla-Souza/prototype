@@ -59,6 +59,6 @@ export async function getAllVideos () {
    return filesWithUrl;
 
   } catch (error) {
-    console.error('Erro ao listar arquivos:', error);
+    window.alert('Erro ao listar arquivos: ' + error);
   }
 };
