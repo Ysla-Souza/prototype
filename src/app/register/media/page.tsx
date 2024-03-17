@@ -167,8 +167,8 @@ export default function Media() {
       window.alert('Necessario adicionar pelo menos um sistema operacional');
     } else if  (data.linkVideo === '') {
       window.alert('É necessario o carregamento de um video');
-    } else if (data.linkImages.length === 0) {
-      window.alert('Necessario adicionar pelo menos uma imagem');
+    } else if (data.linkImages.length < 3) {
+      window.alert('Necessario adicionar pelo menos 3 imagens.');
     } else if (data.releaseDate === '') {
       window.alert('Necessario preencher uma Data de Criação / Última atualização válida');
     } else if (data.developers.length === 0) {
