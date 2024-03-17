@@ -13,7 +13,7 @@ export default function Home() {
     const authUser = async () => {
       const auth = await authenticate();
       if (auth) setShowData(true);
-      else router.push("/login");
+      else router.push("/");
     };
     authUser();
   }, []);

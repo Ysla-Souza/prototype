@@ -37,20 +37,11 @@ export default function Navigation() {
   const logout = async () => {
     setShowMenu(false);
     const signOut = await signOutFirebase();
-    if (signOut) router.push("/login"); 
+    if (signOut) router.push("/"); 
   }
   return(
-    <nav className="bg-white border-gray-200 dark:bg-gray-900">
+    <nav className="absolute w-full border-gray-200">
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
-        {/* <button 
-          type="button"
-          onClick={ () => setShowMenu(!showMenu) }
-          className="bg-white px-2 pt-2 pb-1 rounded cursor-pointer fixed right-0 top-0 sm:mt-1 sm:mr-2 flex flex-col z-40"
-        >
-          <div className={`h-1 w-6 bg-blue-700 mb-1 ${barra1()}`} />
-          <div className={`h-1 w-6 bg-blue-700 mb-1 ${barra2()}`} />
-          <div className={`h-1 w-6 bg-blue-700 mb-1 ${barra3()}`} />
-        </button> */}
         {
           user && user.photoURL &&
             <button 
@@ -84,7 +75,7 @@ export default function Navigation() {
         {
           showMenu &&
           <div className="absolute right-0 top-0 h-screen flex flex-col bg-white w-full sm:1/3 md:w-1/4 lg:w-1/5">
-            <ul className="flex flex-col font-medium items-center justify-center h-full p-4 md:p-0 border border-gray-100 rounded-lg bg-gray-50 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700 gap-4">
+            <ul className="flex flex-col font-medium items-center justify-center h-full p-4 md:p-0 border border-gray-100 bg-gray-50 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700 gap-4">
               <Link 
                 href="/"
                 onClick={ () => setShowMenu(false) }
@@ -92,25 +83,25 @@ export default function Navigation() {
                 Início
               </Link>
               <Link  
-                href="/"
+                href="/videos"
                 onClick={ () => setShowMenu(false) }
                 className="w-full text-center py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">
                 Meus Vídeos
               </Link>
               <Link  
-                href="/"
+                href="/companies"
                 onClick={ () => setShowMenu(false) }
                 className="w-full text-center py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">
                 Empresas
               </Link>
               <Link  
-                href="/"
+                href="/profile"
                 onClick={ () => setShowMenu(false) }
                 className="w-full text-center py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">
                 Perfil
               </Link>
               <Link  
-                href="/"
+                href="/about"
                 onClick={ () => setShowMenu(false) }
                 className="w-full text-center py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">
                 Sobre

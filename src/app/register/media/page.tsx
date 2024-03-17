@@ -1,8 +1,11 @@
 'use client'
 import { categories } from '@/categories';
+import Navigation from '@/components/navigation';
+import { authenticate } from '@/firebase/authenticate';
 import { registerVideo } from '@/firebase/video';
 import Image from 'next/image';
-import { useRef, useState } from "react";
+import { useRouter } from 'next/navigation';
+import { useEffect, useRef, useState } from "react";
 import { MdDelete } from "react-icons/md";
 
 export default function Media() {
@@ -34,6 +37,17 @@ export default function Media() {
       reviews: [],
     },
   );
+  const [showData, setShowData] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    const authUser = async () => {
+      const auth = await authenticate();
+      if (auth) setShowData(true);
+      else router.push("/");
+    };
+    authUser();
+  }, []);
     
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const imageInputRef = useRef<HTMLInputElement | null>(null);
@@ -165,270 +179,278 @@ export default function Media() {
   }
 
   return(
-    <div className="flex flex-col items-center justify-center gap-2">
-      <label>
-        Título
-        <input
-          className="text-black"
-          type="text"
-          name="linkVideo"
-          value={data.title}
-          onChange={ (e: any) => setData({
-            ...data,
-            title: e.target.value,
-          })}
-          style={{
-            border: '2px solid #3498db', // Example border color
-            borderRadius: '5px', // Example border radius
-            padding: '8px', // Example padding
-            fontSize: '16px', // Example font size
-            // Add more styles as needed
-          }}
-        />
-      </label>
-
-      <label>
-        Descrição:
-        <textarea
-          className="text-black"
-          name="description"
-          value={data.description}
-          onChange={ (e: any) => setData({
-            ...data,
-            description: e.target.value,
-          })}
-        />
-      </label>
-
-      <div className="flex flex-col items-center justify-center gap-2">
-        <label>
-          Memória
-          <input
-            className="text-black"
-            type="text"
-            name="linkVideo"
-            value={data.requirement.memory}
-            onChange={ (e: any) => setData({
-              ...data,
-              requirement: {
-                ...data.requirement,
-                memory: e.target.value,
-              },
-            })}
-          />
-        </label>
-        <label>
-          Processador
-          <input
-            className="text-black"
-            type="text"
-            name="linkVideo"
-            value={data.requirement.processor}
-            onChange={ (e: any) => setData({
-              ...data,
-              requirement: {
-                ...data.requirement,
-                processor: e.target.value,
-              },
-            })}
-          />
-        </label>
-        <label>
-          Gráficos
-          <input
-            className="text-black"
-            type="text"
-            name="linkVideo"
-            value={data.requirement.graphics}
-            onChange={ (e: any) => setData({
-              ...data,
-              requirement: {
-                ...data.requirement,
-                graphics: e.target.value,
-              },
-            })}
-          />
-        </label>
-        <label>
-          Versão do DirectX
-          <input
-          className="text-black"
-            type="text"
-            name="linkVideo"
-            value={data.requirement.directXVersion}
-            onChange={ (e: any) => setData({
-              ...data,
-              requirement: {
-                ...data.requirement,
-                directXVersion: e.target.value,
-              },
-            })}
-          />
-        </label>
-        <label>
-          Armazenamento
-          <input
-          className="text-black"
-            type="text"
-            name="linkVideo"
-            value={data.requirement.storage}
-            onChange={ (e: any) => setData({
-              ...data,
-              requirement: {
-                ...data.requirement,
-                storage: e.target.value,
-              },
-            })}
-          />
-        </label>
-        <label>
-          Sistemas Operacionais
-          <select
-            id="operation-system"
-            onChange={(e: any) => setProvSO(e.target.value) }
-            value={provSO} className='text-black capitalize'
-          >
-            <option disabled value="" > {defaultSO.length === 0 ? 'Todas as opções já foram selecionadas' : 'Selecione um SO'} </option>
-            {
-              defaultSO.map((defSO: any, index: number) => (
-                <option key={index} value={defSO} className="capitalize"> {defSO} </option>    
-              ))
-            }
-          </select>
-          <button
-            type="button"
-            onClick={handleSO}>
-            +
-          </button> 
-          {
-            data.requirement.operatingSystems.map((so: any, index: number) => (
-              <div key={index} className="bg-white text-black capitalize">
-                { so }
-                <MdDelete
-                  onClick={() => removeSO(so)}
-                 />
-              </div>
-            ))
-          }
-        </label>
-      </div>
-
-      <label>
-        Carregue seu vídeo:
-        <input type="file" ref={fileInputRef} onChange={handleVideo} />
-      </label>
-
-      <label>
-        Carregue sua Imagem:
-        <input type="file" onChange={handleImage} ref={imageInputRef} />
-        <button type="button" onClick={saveImage}>
-          +
-        </button>
-      </label>
-
+    <div className="w-full h-screen">
+      <Navigation />
+      <div className="w-full h-full items-center justify-center flex flex-col w-wrap py-10 px-32">
       {
-        data.linkImages.map((linkImg: any, index: number) => (
-          <div key={index} className="bg-white text-black">
-            {generateImage(linkImg)}
-          </div>
-        ))
+        !showData 
+          ? <div className="flex items-center justify-center">
+              <span className="loader p-6 space-y-4 md:space-y-6 sm:p-8" />
+            </div>                
+          : <div className="flex flex-col items-center justify-center gap-2">
+              <label>
+                Título
+                <input
+                  className="text-black"
+                  type="text"
+                  name="linkVideo"
+                  value={data.title}
+                  onChange={ (e: any) => setData({
+                    ...data,
+                    title: e.target.value,
+                  })}
+                  style={{
+                    border: '2px solid #3498db', // Example border color
+                    borderRadius: '5px', // Example border radius
+                    padding: '8px', // Example padding
+                    fontSize: '16px', // Example font size
+                    // Add more styles as needed
+                  }}
+                />
+              </label>
+        
+              <label>
+                Descrição:
+                <textarea
+                  className="text-black"
+                  name="description"
+                  value={data.description}
+                  onChange={ (e: any) => setData({
+                    ...data,
+                    description: e.target.value,
+                  })}
+                />
+              </label>
+        
+              <div className="flex flex-col items-center justify-center gap-2">
+                <label>
+                  Memória
+                  <input
+                    className="text-black"
+                    type="text"
+                    name="linkVideo"
+                    value={data.requirement.memory}
+                    onChange={ (e: any) => setData({
+                      ...data,
+                      requirement: {
+                        ...data.requirement,
+                        memory: e.target.value,
+                      },
+                    })}
+                  />
+                </label>
+                <label>
+                  Processador
+                  <input
+                    className="text-black"
+                    type="text"
+                    name="linkVideo"
+                    value={data.requirement.processor}
+                    onChange={ (e: any) => setData({
+                      ...data,
+                      requirement: {
+                        ...data.requirement,
+                        processor: e.target.value,
+                      },
+                    })}
+                  />
+                </label>
+                <label>
+                  Gráficos
+                  <input
+                    className="text-black"
+                    type="text"
+                    name="linkVideo"
+                    value={data.requirement.graphics}
+                    onChange={ (e: any) => setData({
+                      ...data,
+                      requirement: {
+                        ...data.requirement,
+                        graphics: e.target.value,
+                      },
+                    })}
+                  />
+                </label>
+                <label>
+                  Versão do DirectX
+                  <input
+                  className="text-black"
+                    type="text"
+                    name="linkVideo"
+                    value={data.requirement.directXVersion}
+                    onChange={ (e: any) => setData({
+                      ...data,
+                      requirement: {
+                        ...data.requirement,
+                        directXVersion: e.target.value,
+                      },
+                    })}
+                  />
+                </label>
+                <label>
+                  Armazenamento
+                  <input
+                  className="text-black"
+                    type="text"
+                    name="linkVideo"
+                    value={data.requirement.storage}
+                    onChange={ (e: any) => setData({
+                      ...data,
+                      requirement: {
+                        ...data.requirement,
+                        storage: e.target.value,
+                      },
+                    })}
+                  />
+                </label>
+                <label>
+                  Sistemas Operacionais
+                  <select
+                    id="operation-system"
+                    onChange={(e: any) => setProvSO(e.target.value) }
+                    value={provSO} className='text-black capitalize'
+                  >
+                    <option disabled value="" > {defaultSO.length === 0 ? 'Todas as opções já foram selecionadas' : 'Selecione um SO'} </option>
+                    {
+                      defaultSO.map((defSO: any, index: number) => (
+                        <option key={index} value={defSO} className="capitalize"> {defSO} </option>    
+                      ))
+                    }
+                  </select>
+                  <button
+                    type="button"
+                    onClick={handleSO}>
+                    +
+                  </button> 
+                  {
+                    data.requirement.operatingSystems.map((so: any, index: number) => (
+                      <div key={index} className="bg-white text-black capitalize">
+                        { so }
+                        <MdDelete
+                          onClick={() => removeSO(so)}
+                        />
+                      </div>
+                    ))
+                  }
+                </label>
+              </div>
+        
+              <label>
+                Carregue seu vídeo:
+                <input type="file" ref={fileInputRef} onChange={handleVideo} />
+              </label>
+        
+              <label>
+                Carregue sua Imagem:
+                <input type="file" onChange={handleImage} ref={imageInputRef} />
+                <button type="button" onClick={saveImage}>
+                  +
+                </button>
+              </label>
+        
+              {
+                data.linkImages.map((linkImg: any, index: number) => (
+                  <div key={index} className="bg-white text-black">
+                    {generateImage(linkImg)}
+                  </div>
+                ))
+              }
+        
+            <label>
+              Data de Criação / Última atualização
+              <input
+              className="text-black"
+                type="date"
+                value={data.releaseDate}
+                onChange={ (e: any) => setData({
+                  ...data,
+                  releaseDate: e.target.value,
+                })}
+              />
+            </label>
+            <label>
+                Distribuidora
+                <input
+                className="text-black"
+                    type="text"
+                    name="linkVideo"
+                    value={data.publisher}
+                    onChange={ (e: any) => setData({
+                    ...data,
+                    publisher: e.target.value,
+                  })}
+                />
+            </label>
+            <label>
+                Desenvolvedores
+                <input
+                  className="text-black"
+                  type="text"
+                  name="linkVideo"
+                  value={provDev}
+                  onChange={ (e: any) => setProvDev(e.target.value)}
+                />
+                <button type="button" onClick={() => {
+                  const findItem = data.developers.find((dev: any) => dev === provDev);
+                  if (findItem) {
+                    window.alert('Desenvolvedor já inserido!')
+                  } else {
+                    setData({
+                      ...data,
+                      developers: [ ...data.developers, provDev],
+                    });
+                  }
+                  setProvDev('');
+                }}>
+                  +
+                </button>
+                {
+                    data.developers.map((dev: any, index: number) => (
+                      <div key={index} className="bg-white text-black capitalize">
+                        { dev }
+                        <MdDelete
+                          onClick={() => removeDev(dev)}
+                        />
+                      </div>
+                    ))
+                  }
+            </label>
+            
+            <label>
+                Categorias
+                  <select
+                    id="categories"
+                    onChange={(e: any) => setProvCat(e.target.value) }
+                    value={provCat} className='text-black capitalize'
+                  >
+                    <option disabled value="" > Selecione uma Categoria </option>
+                    {
+                      listCategories.map((cat: any, index: number) => (
+                        <option key={index} value={cat} className="capitalize"> {cat} </option>    
+                      ))
+                    }
+                  </select>
+                  <button
+                    type="button"
+                    onClick={handleCat}>
+                    +
+                  </button> 
+                  {
+                    data.categories.map((cat: any, index: number) => (
+                      <div key={index} className="bg-white text-black capitalize">
+                        { cat }
+                        <MdDelete
+                          onClick={() => removeCategory(cat)}
+                        />
+                      </div>
+                    ))
+                  }
+                </label>
+        
+            <button onClick={ checkRegister }>Registrar</button>
+            </div>
       }
-
-    <label>
-      Data de Criação / Última atualização
-      <input
-      className="text-black"
-        type="date"
-        value={data.releaseDate}
-        onChange={ (e: any) => setData({
-          ...data,
-          releaseDate: e.target.value,
-        })}
-      />
-    </label>
-    <label>
-        Distribuidora
-        <input
-        className="text-black"
-            type="text"
-            name="linkVideo"
-            value={data.publisher}
-            onChange={ (e: any) => setData({
-            ...data,
-            publisher: e.target.value,
-          })}
-        />
-    </label>
-    <label>
-        Desenvolvedores
-        <input
-          className="text-black"
-          type="text"
-          name="linkVideo"
-          value={provDev}
-          onChange={ (e: any) => setProvDev(e.target.value)}
-        />
-        <button type="button" onClick={() => {
-          const findItem = data.developers.find((dev: any) => dev === provDev);
-          if (findItem) {
-            window.alert('Desenvolvedor já inserido!')
-          } else {
-            setData({
-              ...data,
-              developers: [ ...data.developers, provDev],
-            });
-          }
-          setProvDev('');
-        }}>
-          +
-        </button>
-        {
-            data.developers.map((dev: any, index: number) => (
-              <div key={index} className="bg-white text-black capitalize">
-                { dev }
-                <MdDelete
-                  onClick={() => removeDev(dev)}
-                 />
-              </div>
-            ))
-          }
-    </label>
-    
-    <label>
-        Categorias
-          <select
-            id="categories"
-            onChange={(e: any) => setProvCat(e.target.value) }
-            value={provCat} className='text-black capitalize'
-          >
-            <option disabled value="" > Selecione uma Categoria </option>
-            {
-              listCategories.map((cat: any, index: number) => (
-                <option key={index} value={cat} className="capitalize"> {cat} </option>    
-              ))
-            }
-          </select>
-          <button
-            type="button"
-            onClick={handleCat}>
-            +
-          </button> 
-          {
-            data.categories.map((cat: any, index: number) => (
-              <div key={index} className="bg-white text-black capitalize">
-                { cat }
-                <MdDelete
-                  onClick={() => removeCategory(cat)}
-                 />
-              </div>
-            ))
-          }
-        </label>
-
-    <button onClick={ checkRegister }>Registrar</button>
-
-
+      </div>
     </div>
-   
   );
 }
