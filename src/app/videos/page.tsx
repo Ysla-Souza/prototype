@@ -20,7 +20,7 @@ export default function Videos() {
 
   return(
     <div className="w-full h-screen">
-      <Navigation />
+      <Navigation name="videos" />
       <div className="w-full h-full items-center justify-center flex flex-col w-wrap py-10 px-32">
         {
           !showData 

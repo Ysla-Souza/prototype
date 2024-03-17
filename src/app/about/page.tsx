@@ -20,7 +20,7 @@ export default function About() {
 
   return(
     <div className="w-full h-screen">
-      <Navigation />
+      <Navigation name="about" />
       <div className="w-full h-full items-center justify-center flex flex-col w-wrap py-10 px-32">
         {
             !showData 

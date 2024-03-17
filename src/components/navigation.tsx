@@ -5,7 +5,8 @@ import Image from "next/image";
 import { authenticate, signOutFirebase } from "@/firebase/authenticate";
 import { useRouter } from "next/navigation";
 
-export default function Navigation() {
+export default function Navigation(props: { name: string }) {
+  const { name } = props;
   const [showMenu, setShowMenu] = useState(false);
   const [user, setUser] = useState<any>({});
   const router = useRouter();
@@ -79,31 +80,33 @@ export default function Navigation() {
               <Link 
                 href="/"
                 onClick={ () => setShowMenu(false) }
-                className="text-center w-full py-2 px-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 dark:text-white md:dark:text-blue-500" aria-current="page">
+                className={`text-center w-full py-2 px-3  ${name === 'home' ? 'bg-white text-blue-700' : 'bg-blue-700 text-white'} rounded md:bg-transparent md:p-0`}
+                aria-current="page"
+              >
                 Início
               </Link>
               <Link  
                 href="/videos"
                 onClick={ () => setShowMenu(false) }
-                className="w-full text-center py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">
+                className={`text-center w-full py-2 px-3  ${name === 'videos' || name === 'video' ? 'bg-white text-blue-700' : 'bg-blue-700 text-white'} rounded md:bg-transparent md:p-0`}>
                 Meus Vídeos
               </Link>
               <Link  
                 href="/companies"
                 onClick={ () => setShowMenu(false) }
-                className="w-full text-center py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">
+                className={`text-center w-full py-2 px-3  ${name === 'companies' || name === 'company' ? 'bg-white text-blue-700' : 'bg-blue-700 text-white'} rounded md:bg-transparent md:p-0`}>
                 Empresas
               </Link>
               <Link  
                 href="/profile"
                 onClick={ () => setShowMenu(false) }
-                className="w-full text-center py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">
+                className={`text-center w-full py-2 px-3  ${name === 'profile' ? 'bg-white text-blue-700' : 'bg-blue-700 text-white'} rounded md:bg-transparent md:p-0`}>
                 Perfil
               </Link>
               <Link  
                 href="/about"
                 onClick={ () => setShowMenu(false) }
-                className="w-full text-center py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">
+                className={`text-center w-full py-2 px-3  ${name === 'about' ? 'bg-white text-blue-700' : 'bg-blue-700 text-white'} rounded md:bg-transparent md:p-0`}>
                 Sobre
               </Link>
               <button 
