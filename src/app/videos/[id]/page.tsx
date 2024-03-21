@@ -1,4 +1,5 @@
 'use client'
+import Footer from "@/components/footer";
 import Navigation from "@/components/navigation";
 import SwiperImages from "@/components/swiperImages";
 import { authenticate } from "@/firebase/authenticate";
@@ -40,13 +41,13 @@ export default function Video({ params }: { params: { id: string} }) {
   return(
     <div className="w-full">
       <Navigation name="video" />
-      <div className="w-full h-full items-center justify-center flex flex-col w-wrap py-10 px-32">
+      <div className="w-full h-full items-center justify-center flex flex-col w-wrap py-10 px-5 sm:px-32">
         {
             !showData 
               ? <div className="flex items-center justify-center">
                   <span className="loader p-6 space-y-4 md:space-y-6 sm:p-8" />
                 </div>                
-              : <div>
+              : <div className="w-full">
                   {
                     video !== null &&
                     <div>
@@ -54,9 +55,9 @@ export default function Video({ params }: { params: { id: string} }) {
                         <source src={video.linkVideo} type="video/mp4" />
                         Seu navegador não suporta o elemento de vídeo.
                       </video>
-                      {/* <div className="w-full">
+                      <div className="w-full">
                         { video.linkImages.length > 0 && <SwiperImages list={video.linkImages} />}
-                      </div> */}
+                      </div>
                       <p className="mb-3 font-normal text-gray-700 dark:text-gray-400 break-all">{video.title}</p>
                       <p className="mb-3 font-normal text-gray-700 dark:text-gray-400 break-all">{ video.description }</p>
                       <p className="mb-3 font-normal text-gray-700 dark:text-gray-400 break-all">{ generateList('Categorias: ', video.categories) }</p>
@@ -84,6 +85,7 @@ export default function Video({ params }: { params: { id: string} }) {
                 </div>
         }
       </div>
+      <Footer />
     </div>
     );
   }

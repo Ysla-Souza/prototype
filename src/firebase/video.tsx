@@ -20,7 +20,6 @@ export async function registerVideo(data: any) {
     const firebaseApp = initializeApp(firebaseConfig);
     const db = getFirestore(firebaseApp);
     const videosCollection = collection(db, "videos");
-
       // Criar consulta para verificar se existe algum registro com o título informado
       const verify = query(videosCollection, where('title', '==', data.title));
       const querySnapshot = await getDocs(verify);
@@ -101,5 +100,26 @@ export async function getVideoById(videoId: string) {
   } catch (error) {
     console.error('Erro ao obter vídeo por ID:', error);
     throw error;
+  }
+}
+
+export async function getVideosByEmail(email: string) {
+  try {
+    const firebaseApp = initializeApp(firebaseConfig);
+    const db = getFirestore(firebaseApp);
+    const videosCollectionRef = collection(db, 'videos');
+    const q = query(videosCollectionRef, where('user', '==', email));
+    const querySnapshot = await getDocs(q);
+    const videos: any = [];
+    querySnapshot.forEach((doc) => {
+      videos.push({
+        id: doc.id,
+        ...doc.data()
+      });
+    });
+    return videos;
+  } catch (error) {
+    window.alert('Erro ao obter vídeos por email: (' + error + ')');
+    return false;
   }
 }

@@ -19,29 +19,13 @@ export default function Navigation(props: { name: string }) {
     authUser();
   }, []);
 
-  const barra1 = () => {
-    if(!showMenu) {
-      return 'rotate-0 transition duration-500 z-0';
-    } return 'rotate-45 transition duration-500 translate-y-2 z-40';
-  }
-  const barra2 = () => {
-    if(!showMenu) {
-      return 'rotate-0 transition duration-500 z-0';
-    } return '-rotate-45 transition duration-500 z-40';
-  }
-  const barra3 = () => {
-    if(!showMenu) {
-      return 'opacity-1 transition duration-500 z-0';
-    } return 'opacity-0 transition duration-500 z-40';
-  }
-
   const logout = async () => {
     setShowMenu(false);
     const signOut = await signOutFirebase();
     if (signOut) router.push("/"); 
   }
   return(
-    <nav className="absolute w-full border-gray-200">
+    <nav className="fixed w-full border-gray-200 z-50">
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
         {
           user && user.photoURL &&
@@ -80,7 +64,7 @@ export default function Navigation(props: { name: string }) {
               <Link 
                 href="/"
                 onClick={ () => setShowMenu(false) }
-                className={`text-center w-full py-2 px-3  ${name === 'home' ? 'bg-white text-blue-700' : 'bg-blue-700 text-white'} rounded md:bg-transparent md:p-0`}
+                className={`text-center w-full py-2 px-3  ${name === 'home' ? 'bg-white text-blue-700' : 'bg-blue-700 text-black hover:text-blue-700'} rounded md:bg-transparent md:p-0`}
                 aria-current="page"
               >
                 Início
@@ -88,25 +72,25 @@ export default function Navigation(props: { name: string }) {
               <Link  
                 href="/videos"
                 onClick={ () => setShowMenu(false) }
-                className={`text-center w-full py-2 px-3  ${name === 'videos' || name === 'video' ? 'bg-white text-blue-700' : 'bg-blue-700 text-white'} rounded md:bg-transparent md:p-0`}>
+                className={`text-center w-full py-2 px-3  ${name === 'videos' || name === 'video' ? 'bg-white text-blue-700' : 'bg-blue-700 text-black hover:text-blue-700'} rounded md:bg-transparent md:p-0`}>
                 Meus Vídeos
               </Link>
               <Link  
                 href="/companies"
                 onClick={ () => setShowMenu(false) }
-                className={`text-center w-full py-2 px-3  ${name === 'companies' || name === 'company' ? 'bg-white text-blue-700' : 'bg-blue-700 text-white'} rounded md:bg-transparent md:p-0`}>
+                className={`text-center w-full py-2 px-3  ${name === 'companies' || name === 'company' ? 'bg-white text-blue-700' : 'bg-blue-700 text-black hover:text-blue-700'} rounded md:bg-transparent md:p-0`}>
                 Empresas
               </Link>
               <Link  
                 href="/profile"
                 onClick={ () => setShowMenu(false) }
-                className={`text-center w-full py-2 px-3  ${name === 'profile' ? 'bg-white text-blue-700' : 'bg-blue-700 text-white'} rounded md:bg-transparent md:p-0`}>
+                className={`text-center w-full py-2 px-3  ${name === 'profile' ? 'bg-white text-blue-700' : 'bg-blue-700 text-black hover:text-blue-700'} rounded md:bg-transparent md:p-0`}>
                 Perfil
               </Link>
               <Link  
                 href="/about"
                 onClick={ () => setShowMenu(false) }
-                className={`text-center w-full py-2 px-3  ${name === 'about' ? 'bg-white text-blue-700' : 'bg-blue-700 text-white'} rounded md:bg-transparent md:p-0`}>
+                className={`text-center w-full py-2 px-3  ${name === 'about' ? 'bg-white text-blue-700' : 'bg-blue-700 text-black hover:text-blue-700'} rounded md:bg-transparent md:p-0`}>
                 Sobre
               </Link>
               <button 

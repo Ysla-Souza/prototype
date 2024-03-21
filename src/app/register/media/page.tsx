@@ -1,5 +1,6 @@
 'use client'
 import { categories } from '@/categories';
+import Footer from '@/components/footer';
 import Navigation from '@/components/navigation';
 import { authenticate } from '@/firebase/authenticate';
 import { registerVideo } from '@/firebase/video';
@@ -451,6 +452,7 @@ export default function Media() {
             </div>
       }
       </div>
+      <Footer />
     </div>
   );
 }
