@@ -10,7 +10,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { CiStar } from "react-icons/ci";
 import { MdVideocam } from "react-icons/md";
 
 export default function Profile() {
@@ -56,12 +55,10 @@ export default function Profile() {
     return formattedDevelopers.join(' - ');
   };
 
-  console.log(userData);
-
   return(
     <div className="w-full min-h-screen">
       <Navigation name="profile" />
-      <div className="w-full h-full items-center justify-center flex flex-col w-wrap pb-10">
+      <div className="w-full h-full items-center justify-start flex flex-col w-wrap pb-10 min-h-screen">
         {
             !showData 
               ? <div className="flex items-center justify-center h-screen">

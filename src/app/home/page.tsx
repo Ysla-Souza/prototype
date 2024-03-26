@@ -1,5 +1,4 @@
 'use client'
-import SwiperImages from "@/components/swiperImages";
 import Navigation from "@/components/navigation";
 import { authenticate } from "@/firebase/authenticate";
 import { getAllVideos } from "@/firebase/video";
@@ -7,22 +6,45 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import ItemVideo from "@/components/itemVideo";
 import Image from "next/image";
+import { MdOutlineFilterList } from "react-icons/md";
+import { categories } from "@/categories";
+import { IoClose } from "react-icons/io5";
+import { getUserByEmail } from "@/firebase/user";
 import Footer from "@/components/footer";
 
 export default function Home() {
-  const [allVideos, setAllVideos] = useState<any[]>();
+  const [listCategories, setListCategories] = useState<any>(categories.sort());
+  const [selectedCat, setSelectedCat] = useState<any>([]);
+  const [allFilteredVideos, setAllFilteredVideos] = useState<any[]>([]);
+  const [allVideos, setAllVideos] = useState<any[]>([]);
+  const [loggedUser, setLoggedUser] = useState<any>();
   const [showData, setShowData] = useState(false);
+  const [showFilter, setShowFilter] = useState(false);
   const router = useRouter();
 
   const getVideos = async () => {
     const allVideos = await getAllVideos();
+    setAllFilteredVideos(allVideos);
     setAllVideos(allVideos);
+    const uniqueCategories: string[] = [];
+    allVideos.forEach((video: any) => {
+      video.categories.forEach((category: any) => {
+        if (!uniqueCategories.includes(category)) {
+          uniqueCategories.push(category);
+        }
+      });
+    });
+    setListCategories(uniqueCategories.sort());
   };
 
   useEffect(() => {
     const authUser = async () => {
       const auth = await authenticate();
-      if (auth) setShowData(true);
+      if (auth) {
+        setShowData(true);
+        const user = await getUserByEmail(auth.email);
+        setLoggedUser(user);
+      }
       else router.push("/");
     };
     getVideos();
@@ -57,17 +79,84 @@ export default function Home() {
                   </span>
                 </button>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 ">
+              <MdOutlineFilterList
+                className="text-xl mb-5 cursor-pointer"
+                onClick={() => setShowFilter(!showFilter)}
+              />
+              {
+                showFilter &&
+                <div className="w-full mb-3">
+                  <select
+                    name="categories"
+                    id="categories"
+                    onChange={(e: any) => {
+                      const newArray = [...selectedCat, e.target.value];
+                      setSelectedCat(newArray);
+                      setListCategories(listCategories.filter((listCat: string) => listCat !== e.target.value).sort());
+                      setAllFilteredVideos(allFilteredVideos.filter((video: any) => video.categories.includes(e.target.value)));
+                      if (newArray.length > 1) {
+                        setAllFilteredVideos(allVideos.filter(video =>
+                          video.categories.some((category: any) => newArray.includes(category)))
+                        );
+                      }
+                    }}
+                    value=""
+                    className="shadow-sm w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
+                    required 
+                  >
+                    <option disabled value="" > Selecione uma Categoria </option>
+                    {
+                      listCategories.length > 0 && listCategories.map((cat: any, index: number) => (
+                        <option key={index} value={cat} className="capitalize"> {cat} </option>    
+                      ))
+                    }
+                  </select>
+                </div>
+              }
+              {
+                showFilter && selectedCat.length > 0 &&
+                <div className="flex gap-2 flex-wrap mb-5">
+                  {
+                    selectedCat.map((cat: string, index: number) => (
+                      <div
+                        key={index}
+                        className="rounded-full group bg-gradient-to-br from-purple-600 to-blue-500 from-purple-600 to-blue-500 text-white px-3 p-2 flex items-center gap-5"
+                      >
+                        { cat }
+                        <IoClose
+                        className="transition-colors duration-300 hover:bg-black rounded-full p-1 text-3xl cursor-pointer"
+                        onClick={() => {
+                          const newArray = [...listCategories, cat];
+                          setListCategories(newArray.sort());
+                          const removeCategory = selectedCat.filter((listCat: string) => listCat !== cat).sort();
+                          setSelectedCat(removeCategory);
+                          if (selectedCat.length === 1) setAllFilteredVideos(allVideos);
+                          console.log(removeCategory);
+                          if (removeCategory.length > 0)
+                            setAllFilteredVideos(allVideos.filter(video =>
+                            video.categories.some((category: any) => removeCategory.includes(category)))
+                          );
+                        }}
+                        />
+                      </div>
+                    ))
+                  }
+                </div>
+              }
+              <div className={`${selectedCat.length !== 0 && allFilteredVideos.length === 0 ? 'grid-cols-1' : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'} grid gap-5`}>
                 {
-                  allVideos
-                  && allVideos.length > 0
-                  ? allVideos.map((itemVideo: any, index: number) => (
+                  allFilteredVideos
+                  && allFilteredVideos.length > 0
+                  ? allFilteredVideos.map((itemVideo: any, index: number) => (
                     <ItemVideo
                       key={index}
                       itemVideo={itemVideo}
+                      loggedUser={loggedUser}
                     />
                   ))
-                  : <div className="h-80vh" />
+                  : selectedCat.length === 0
+                    ? <div className="h-80vh" />
+                    : <div className="h-80vh text-center w-full mt-10">{`${selectedCat.length === 1 ? 'Não existem vídeos com a categoria selecionada' : 'Não existem vídeos cadastrados que possuam alguma das categorias selecionadas.'}`}</div>
                 }
               </div>
             </div>

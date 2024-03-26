@@ -1,4 +1,4 @@
-import { addDoc, collection, doc, getDoc, getDocs, getFirestore, query, where } from "firebase/firestore";
+import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, getFirestore, query, where } from "firebase/firestore";
 import { createImage, createVideo } from "./storage";
 import { initializeApp } from "firebase/app";
 import { authenticate } from "./authenticate";
@@ -19,12 +19,8 @@ export async function registerVideo(data: any) {
     const user = auth?.email;
     const firebaseApp = initializeApp(firebaseConfig);
     const db = getFirestore(firebaseApp);
-    const videosCollection = collection(db, "videos");
-      // Criar consulta para verificar se existe algum registro com o título informado
-      const verify = query(videosCollection, where('title', '==', data.title));
-      const querySnapshot = await getDocs(verify);
-          // Se já existir um vídeo com o mesmo título, exiba um alerta e encerre a função
-      if (!querySnapshot.empty) {
+    const videosCollection = collection(db, "videos");const verify = query(videosCollection, where('title', '==', data.title));
+      const querySnapshot = await getDocs(verify);if (!querySnapshot.empty) {
         window.alert('Já existe um vídeo com o título informado. Não é possível prosseguir com o cadastro.');
         return;
       }
@@ -93,9 +89,11 @@ export async function getVideoById(videoId: string) {
     const videoDocSnapshot = await getDoc(videoDocRef);
     
     if (videoDocSnapshot.exists()) {
-      return videoDocSnapshot.data();
+      const videoData = videoDocSnapshot.data();
+      videoData.id = videoDocSnapshot.id;
+      return videoData;
     } else {
-      throw new Error('O vídeo com o ID fornecido não foi encontrado.');
+      window.alert('O vídeo com o ID fornecido não foi encontrado.');
     }
   } catch (error) {
     console.error('Erro ao obter vídeo por ID:', error);
@@ -121,5 +119,21 @@ export async function getVideosByEmail(email: string) {
   } catch (error) {
     window.alert('Erro ao obter vídeos por email: (' + error + ')');
     return false;
+  }
+}
+
+export async function deleteVideoById(videoId: string) {
+  try {
+    const firebaseApp = initializeApp(firebaseConfig);
+    const db = getFirestore(firebaseApp);
+    const videoDocRef = doc(db, "videos", videoId);
+    const videoDocSnapshot = await getDoc(videoDocRef);
+    if (videoDocSnapshot.exists()) {await deleteDoc(videoDocRef);
+      window.alert(`Vídeo excluído com sucesso!`);
+    } else {
+      window.alert('O vídeo não foi encontrado. Por favor, atualize a página e tente novamente');
+    }
+  } catch (error) {
+    window.alert('Erro ao excluir vídeo (' + error + ').');
   }
 }

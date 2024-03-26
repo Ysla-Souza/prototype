@@ -157,8 +157,8 @@ export default function Media() {
   const checkRegister = async () => {
     if (data.title === '' || data.title.length < 4) {
       window.alert('Necessario preencher um Titulo com mais de 4 caracteres');
-    } else if (data.description === '' || data.description.length < 100) {
-      window.alert('Necessario preencher um Descrição com mais de 100 caracteres');
+    } else if (data.description === '' || data.description.length < 50) {
+      window.alert('Necessario preencher um Descrição com mais de 50 caracteres');
     } else if (data.requirement.memory === '' || data.requirement.memory.length < 4) {
       window.alert('Necessario preencher um valor para a memoria com pelo menos 4 caracteres');
     } else if (data.requirement.processor === '' || data.requirement.processor.length < 4) {
