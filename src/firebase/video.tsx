@@ -177,7 +177,7 @@ export async function deleteImage(url: string) {
 export async function deleteVideo(url: string) {
   const caminhoDoArquivo = decodeURIComponent(url.split('videos%2F')[1].split('?')[0]);
   const storage = getStorage();
-  const imagemRef = ref(storage, '/images/' + caminhoDoArquivo);
+  const imagemRef = ref(storage, '/videos/' + caminhoDoArquivo);
   await deleteObject(imagemRef);
 };
 
@@ -188,11 +188,8 @@ export async function deleteVideoById(videoId: string) {
       for (let i = 0; i < videoToDelete.linkImages.length; i += 1) {
         await deleteImage(videoToDelete.linkImages[i]);
       }
-
-      for (let i = 0; i < videoToDelete.linkVideo.length; i += 1) {
-        await deleteVideo(videoToDelete.linkVideo[i]);
-      }
-
+      await deleteVideo(videoToDelete.linkVideo);
+      
       const firebaseApp = initializeApp(firebaseConfig);
       const db = getFirestore(firebaseApp);
       const videoDocRef = doc(db, "videos", videoId);
