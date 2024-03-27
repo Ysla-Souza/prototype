@@ -2,10 +2,10 @@ import { CiStar } from "react-icons/ci";
 import { useRouter } from "next/navigation";
 import { FaEdit } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
-
 import { useState } from "react";
 import EditVideo from "./editVideo";
 import DeleteVideo from "./deleteVideo";
+import StaticReviews from "./staticReviews";
 
 export default function ItemVideo(props: any) {
   const { itemVideo } = props;
@@ -40,13 +40,7 @@ export default function ItemVideo(props: any) {
         <h5 className="mb-2 text-lg font-bold tracking-tight text-gray-900 dark:text-white pt-4">{ itemVideo.title }</h5>
         <p className="font-normal text-gray-700 dark:text-gray-400 break-words text-sm">{generateListItems('Categorias: ', itemVideo.categories)}.</p>
         <p className="mb-3 font-normal text-gray-700 dark:text-gray-400 break-words text-sm">{generateListItems('Desenvolvido por ', itemVideo.developers)}.</p>
-        <div className="flex gap-1 pb-3">
-          <CiStar />
-          <CiStar />
-          <CiStar />
-          <CiStar />
-          <CiStar />
-        </div>
+        <StaticReviews video={itemVideo} />
         {
           props.loggedUser
           && props.loggedUser.email !== ''

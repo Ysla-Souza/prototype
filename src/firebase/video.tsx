@@ -167,6 +167,18 @@ export async function updateVideo(
   }
 };
 
+export async function updateReview(video: any) {
+  try {
+   const firebaseApp = initializeApp(firebaseConfig);
+   const db = getFirestore(firebaseApp);
+   const videoRef = doc(db, 'videos', video.id);
+   await updateDoc(videoRef, { reviews: video.review });
+   window.alert('Sua avaliação foi enviada com sucesso!');
+  } catch(error: any) {
+   window.alert('Não foi possível deixar seu review: (' + error + ')');
+  }
+}
+
 export async function deleteImage(url: string) {
   const caminhoDoArquivo = decodeURIComponent(url.split('images%2F')[1].split('?')[0]);
   const storage = getStorage();
