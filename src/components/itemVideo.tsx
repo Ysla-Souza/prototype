@@ -2,11 +2,14 @@ import { CiStar } from "react-icons/ci";
 import { useRouter } from "next/navigation";
 import { FaEdit } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
-import DeleteVideo from "./deleteVideo";
+
 import { useState } from "react";
+import EditVideo from "./editVideo";
+import DeleteVideo from "./deleteVideo";
 
 export default function ItemVideo(props: any) {
   const { itemVideo } = props;
+  const [showEdit, setShowEdit] = useState(false);
   const [showDelete, setShowDelete] = useState(false);
   const router = useRouter();
 
@@ -56,6 +59,7 @@ export default function ItemVideo(props: any) {
               <FaEdit
                 className="cursor-pointer"
                 onClick={(e) => {
+                  setShowEdit(true);
                   e.stopPropagation();
                 }}
               />
@@ -96,6 +100,13 @@ export default function ItemVideo(props: any) {
         <DeleteVideo
           itemVideo={itemVideo}
           setShowDelete={setShowDelete}
+        />
+      }
+      {
+        showEdit &&
+        <EditVideo
+          itemVideo={itemVideo}
+          setShowEdit={setShowEdit}
         />
       }
     </div>

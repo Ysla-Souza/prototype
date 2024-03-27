@@ -1,6 +1,5 @@
 'use client'
 import React from 'react';
-import { BsInstagram, BsWhatsapp } from "react-icons/bs";
 
 export default function Footer() {
   return (
