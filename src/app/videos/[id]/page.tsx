@@ -1,5 +1,5 @@
 'use client'
-import Footer from "@/components/Footer";
+import Footer from "@/components/footer";
 import DeleteVideo from "@/components/deleteVideo";
 import EditVideo from "@/components/editVideo";
 import Navigation from "@/components/navigation";

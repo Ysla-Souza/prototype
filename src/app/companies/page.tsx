@@ -4,7 +4,7 @@ import { authenticate } from "@/firebase/authenticate";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import Footer from "@/components/Footer";
+import Footer from "@/components/footer";
 import { getCompanies } from "@/firebase/user";
 import { MdOutlineFilterList } from "react-icons/md";
 

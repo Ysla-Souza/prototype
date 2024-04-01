@@ -3,7 +3,7 @@ import Navigation from "@/components/navigation";
 import { authenticate } from "@/firebase/authenticate";
 import { useContext, useEffect, useState } from "react";
 import Image from "next/image";
-import Footer from "@/components/Footer";
+import Footer from "@/components/footer";
 import { useRouter } from "next/navigation";
 import { IoIosCloseCircleOutline } from "react-icons/io";
 import contextProv from '../../context/context';

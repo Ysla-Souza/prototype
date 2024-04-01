@@ -6,7 +6,7 @@ import { getUserByEmail } from "@/firebase/user";
 import { getVideosByEmail } from "@/firebase/video";
 import { MdVideocam } from "react-icons/md";
 import EditProfile from "@/components/editProfile";
-import Footer from "@/components/Footer";
+import Footer from "@/components/footer";
 import ItemVideo from "@/components/itemVideo";
 import Loading from "@/components/loading";
 import Navigation from "@/components/navigation";

@@ -1,6 +1,6 @@
 'use client'
 import EditProfile from "@/components/editProfile";
-import Footer from "@/components/Footer";
+import Footer from "@/components/footer";
 import ItemVideo from "@/components/itemVideo";
 import Navigation from "@/components/navigation";
 import { authenticate } from "@/firebase/authenticate";

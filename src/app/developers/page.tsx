@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { getDevelopers } from "@/firebase/user";
-import Footer from "@/components/Footer";
+import Footer from "@/components/footer";
 import { MdOutlineFilterList } from "react-icons/md";
 
 export default function Developers() {

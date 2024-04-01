@@ -8,7 +8,7 @@ import Image from "next/image";
 import { MdOutlineFilterList } from "react-icons/md";
 import { IoClose } from "react-icons/io5";
 import { getUserByEmail } from "@/firebase/user";
-import Footer from "@/components/Footer";
+import Footer from "@/components/footer";
 import RegisterVideo from "@/components/registerVideo";
 import contextPro from '../../context/context';
 import Loading from "@/components/loading";
