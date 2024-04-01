@@ -16,8 +16,10 @@ export default function EditProfile(props: any) {
   const updateUser = async () => {
     setLoading(true);
     setError('');
-    if(userData.firstName.length < 2) {
+    if(userData.firstName.length < 2 && userData.typeUser === 'developer') {
       setError('Necessário inserir um Nome com mais de 2 caracteres');
+    } else if(userData.company.length < 2 && userData.typeUser === 'company') {
+      setError('Necessário inserir um Nome para a Empresa com pelo menos 2 caracteres');
     } else if(userData.lastName.length < 2) {
       setError('Necessário inserir um Sobrenome com mais de 2 caracteres');
     } else if(userData.skills.length === 0) {
@@ -30,60 +32,45 @@ export default function EditProfile(props: any) {
     setLoading(false);
   };
 
-  const updateCompany = async () => {
-    setLoading(true);
-    setError('');
-    if(userData.company.length < 2) {
-      setError('Necessário inserir um Nome para a Empresa com pelo menos 2 caracteres');
-    } else if(userData.categories.length === 0) {
-      setError('Necessário inserir pelo menos uma Área de Atuação / Interesse');
-    } else {
-     const updtUser = await updateUserById(userData);
-     if (updtUser) props.setUserData(userData);
-     props.setShowEditProfile(false)
-    }
-    setLoading(false);
-  };
-
   const removeSkill = (option: string) => {
+    setUserData({
+      ...userData,
+      skills: userData.skills.filter((rmSo: any) => rmSo !== option),
+    });
     if (userData.typeUser === 'company') {
-      setUserData({
-        ...userData,
-        categories: userData.categories.filter((rmSo: any) => rmSo !== option),
-      });
       const ordered = [...listCategories, option];
       setListCategories(ordered.sort());
-    } else {
-      setUserData({
-        ...userData,
-        skills: userData.skills.filter((rmSo: any) => rmSo !== option),
-      });
     }
   }
 
   const addCategory = () => {
-    const findItem = userData.categories.find((dev: any) => dev === provCat);
+    const findItem = userData.skills.find((dev: any) => dev === provCat);
     if (findItem) window.alert('Área de Interesse / Atuação já inserida!');
     else {
-      setUserData({
-        ...userData,
-        categories: [...userData.categories, provCat],
-      });
+      if (provCat !== '' && provCat !== ' ') {
+        setUserData({
+          ...userData,
+          skills: [...userData.skills, provCat],
+        });
+        const newOptions = listCategories.filter((defCat: any) => defCat !== provCat);
+        setListCategories(newOptions);
+        setProvCat('');
+      } else window.alert('Necessário preencher uma categoria com pelo menos um catactere');
     }
-    const newOptions = listCategories.filter((defCat: any) => defCat !== provCat);
-    setListCategories(newOptions);
-    setProvCat('');
   }
 
   const addSkill = () => {
-    const findItem = userData.skills.find((dev: any) => dev === provSkill);
+    var text = provSkill;
+    if ((text[text.length -1]) === ' ') text = text.slice(0, -1);
+    const findItem = userData.skills.find((dev: any) => dev === text);
     if (findItem) window.alert('Habilidade já inserida!');
     else {
-      setUserData({
-        ...userData,
-        categories: [...userData.categories, provSkill],
-        skills: [...userData.skills, provSkill],
-      });
+      if (text !== '' && text !== ' ') {
+        setUserData({
+          ...userData,
+          skills: [...userData.skills, text],
+        });
+      } else window.alert('Necessário preencher uma habilidade com pelo menos um Caractere');
     }
     setProvSkill('');
   }
@@ -180,7 +167,10 @@ export default function EditProfile(props: any) {
                       name="linkVideo"
                       placeholder="Digite uma habilidade ou tecnologia"
                       value={provSkill}
-                      onChange={ (e: any) => setProvSkill(e.target.value)}
+                      onChange={ (e: any) => {
+                        const sanitizedValue = e.target.value.replace(/\s+/g, ' ');
+                        setProvSkill(sanitizedValue);
+                      }}
                     />
                     <button
                       type="button"
@@ -193,7 +183,10 @@ export default function EditProfile(props: any) {
                   : <div className="w-full flex items-center justify-center gap-2">
                     <select
                       id="categories"
-                      onChange={(e: any) => setProvCat(e.target.value) }
+                      onChange={(e: any) => {
+                        const sanitizedValue = e.target.value.replace(/\s+/g, ' ');
+                        setProvCat(sanitizedValue);
+                      }}
                       value={provCat} className='bg-white w-full p-3 cursor-pointer text-black text-center capitalize'
                     >
                       <option disabled value="">Selecione uma Categoria </option>
@@ -223,7 +216,7 @@ export default function EditProfile(props: any) {
                   ))
                 }
                 {
-                  userData && userData.categories && userData.categories.map((optionSkill: any, index: number) => (
+                  userData && userData.skills && userData.skills.map((optionSkill: any, index: number) => (
                     <div key={index} className="bg-white text-black capitalize w-full flex items-center justify-between mt-2 p-2">
                       { optionSkill }
                       <MdDelete
@@ -243,10 +236,7 @@ export default function EditProfile(props: any) {
               </button>
               <button
                 className={`text-white bg-black hover:border-red-800 transition-colors cursor-pointer' } border-2 border-white w-full p-2 mt-6 font-bold`}
-                onClick={ () => {
-                  if(userData.typeUser === 'developer') updateUser();
-                  else updateCompany();
-                }}
+                onClick={ updateUser }
               >
                   Salvar
               </button>

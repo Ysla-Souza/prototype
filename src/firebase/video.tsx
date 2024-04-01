@@ -14,7 +14,7 @@ const firebaseConfig = {
   measurementId: "G-X4S0NFGFK4"
 };
 
-export async function registerVideo(data: any) {
+export async function registerVideo(data: any, linkImages: any) {
   try {
     const auth = await authenticate();
     const user = auth?.email;
@@ -27,13 +27,13 @@ export async function registerVideo(data: any) {
         return;
       }
       const linkVid = await createVideo(data.title, data.linkVideo);
-      const linkImages = [];
-      for (let i = 0; i < data.linkImages.length; i += 1) {
-      const linkImg = await createImage(data.title, data.linkImages[i]);
-      linkImages.push(linkImg);
+      const linkImgs = [];
+      for (let i = 0; i < linkImages.length; i += 1) {
+      const linkImg = await createImage(data.title, linkImages[i]);
+      linkImgs.push(linkImg);
     }
     
-    if (typeof linkVid === 'string' && linkImages.length > 0) {
+    if (typeof linkVid === 'string' && linkImgs.length > 0) {
       const item = {
         linkVideo: linkVid,
         title: data.title,
@@ -49,7 +49,7 @@ export async function registerVideo(data: any) {
         releaseDate: data.releaseDate,
         publisher: data.publisher,
         developers: data.developers,
-        linkImages: linkImages,
+        linkImages: linkImgs,
         categories: data.categories,
         PublishDate: Date.now(),
         reviews: [],
@@ -172,7 +172,7 @@ export async function updateReview(video: any) {
    const firebaseApp = initializeApp(firebaseConfig);
    const db = getFirestore(firebaseApp);
    const videoRef = doc(db, 'videos', video.id);
-   await updateDoc(videoRef, { reviews: video.review });
+   await updateDoc(videoRef, { reviews: video.reviews });
    window.alert('Sua avaliação foi enviada com sucesso!');
   } catch(error: any) {
    window.alert('Não foi possível deixar seu review: (' + error + ')');

@@ -1,43 +1,32 @@
 'use client'
 import Navigation from "@/components/navigation";
 import { authenticate } from "@/firebase/authenticate";
-import { getAllVideos } from "@/firebase/video";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import ItemVideo from "@/components/itemVideo";
 import Image from "next/image";
 import { MdOutlineFilterList } from "react-icons/md";
-import { categories } from "@/categories";
 import { IoClose } from "react-icons/io5";
 import { getUserByEmail } from "@/firebase/user";
-import Footer from "@/components//footer";
+import Footer from "@/components/Footer";
 import RegisterVideo from "@/components/registerVideo";
+import contextPro from '../../context/context';
+import Loading from "@/components/loading";
 
 export default function Home() {
-  const [listCategories, setListCategories] = useState<any>(categories.sort());
+  const context = useContext(contextPro);
+  const {
+    allVideos,
+    getVideos,
+    allFilteredVideos, setAllFilteredVideos,
+    listCategories, setListCategories,
+    showRegister, setShowRegister,
+  } = context;
   const [selectedCat, setSelectedCat] = useState<any>([]);
-  const [allFilteredVideos, setAllFilteredVideos] = useState<any[]>([]);
-  const [allVideos, setAllVideos] = useState<any[]>([]);
   const [loggedUser, setLoggedUser] = useState<any>();
   const [showData, setShowData] = useState(false);
-  const [showRegister, setShowRegister] = useState(false);
   const [showFilter, setShowFilter] = useState(false);
   const router = useRouter();
-
-  const getVideos = async () => {
-    const allVideos = await getAllVideos();
-    setAllFilteredVideos(allVideos);
-    setAllVideos(allVideos);
-    const uniqueCategories: string[] = [];
-    allVideos.forEach((video: any) => {
-      video.categories.forEach((category: any) => {
-        if (!uniqueCategories.includes(category)) {
-          uniqueCategories.push(category);
-        }
-      });
-    });
-    setListCategories(uniqueCategories.sort());
-  };
 
   useEffect(() => {
     const authUser = async () => {
@@ -56,30 +45,26 @@ export default function Home() {
   return(
     <div className={`w-full ${showData ? 'min-h-screen' : 'h-80vh'}`}>
       <Navigation name="home" />
-      <Image
-        src=""
-        className="w-full object-cover h-20vh bg-gray-500"
-        width={1500}
-        height={1500}
-        alt="paisagem"
-      />
-      <div className="w-full h-full items-center justify-center flex w-wrap py-5 px-5 sm:px-20 lg:px-28 bg-gray-200">
+      <div className="w-full h-35vh relative bg-dice bg-cover" />
+      <div className="w-full h-full items-center justify-center flex w-wrap pb-10 py-5 px-5 sm:px-20 lg:px-28 bg-black">
         {
           !showData 
-          ? <div className="flex items-center justify-center">
-              <span className="loader p-6 space-y-4 md:space-y-6 sm:p-8" />
-            </div>                
+          ? <Loading />                
           : <div className="w-full">
-              <div className="flex justify-between items-center w-full">
-                <h2 className="text-center sm:text-left mt-3 mb-5 text-2xl">Vídeos</h2>
-                <button
-                  onClick={() => setShowRegister(true) }
-                  className="relative inline-flex items-center justify-center p-0.5 mb-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800"
-                >
-                  <span className="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
-                    Carregar Vídeo
-                  </span>
-                </button>
+              <div className="flex flex-col sm:flex-row justify-between items-center w-full">
+                <h2 className="text-center text-violet-400 sm:text-left mt-3 text-2xl">Bem vindo!</h2>
+                {
+                  loggedUser
+                  && loggedUser.typeUser === 'developer' &&
+                  <button
+                    onClick={() => setShowRegister(true) }
+                    className="relative inline-flex items-center justify-center p-0.5 mb-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 hover:from-blue-500 hover:to-purple-600 hover:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800"
+                  >
+                    <span className="relative px-5 py-2.5 transition-all ease-in duration-75 text-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
+                      Carregar Vídeo
+                    </span>
+                  </button>
+                }
               </div>
               <MdOutlineFilterList
                 className="text-xl mb-5 cursor-pointer"
@@ -103,7 +88,7 @@ export default function Home() {
                       }
                     }}
                     value=""
-                    className="shadow-sm w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
+                    className="shadow-sm w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
                     required 
                   >
                     <option disabled value="" > Selecione uma Categoria </option>
@@ -133,7 +118,6 @@ export default function Home() {
                           const removeCategory = selectedCat.filter((listCat: string) => listCat !== cat).sort();
                           setSelectedCat(removeCategory);
                           if (selectedCat.length === 1) setAllFilteredVideos(allVideos);
-                          console.log(removeCategory);
                           if (removeCategory.length > 0)
                             setAllFilteredVideos(allVideos.filter(video =>
                             video.categories.some((category: any) => removeCategory.includes(category)))
@@ -145,10 +129,9 @@ export default function Home() {
                   }
                 </div>
               }
-              <div className={`${selectedCat.length !== 0 && allFilteredVideos.length === 0 ? 'grid-cols-1' : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'} grid gap-5`}>
+              <div className={`${selectedCat.length !== 0 && allFilteredVideos.length === 0 ? 'grid-cols-1' : 'grid-cols-1 sm:grid-cols-1'} grid gap-5`}>
                 {
-                  allFilteredVideos
-                  && allFilteredVideos.length > 0
+                  allFilteredVideos.length > 0
                   ? allFilteredVideos.map((itemVideo: any, index: number) => (
                     <ItemVideo
                       key={index}
@@ -166,7 +149,7 @@ export default function Home() {
       </div>
       {
         showRegister &&
-        <RegisterVideo setShowRegister={setShowRegister} />
+        <RegisterVideo />
       }
       <Footer />
     </div>

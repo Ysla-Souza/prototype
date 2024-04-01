@@ -14,7 +14,6 @@ const firebaseConfig = {
 export async function createVideo (title: string, data: any){
   try {
     const app = initializeApp(firebaseConfig);
-    
     const storage = getStorage(app);
     const storageRef = ref(storage, `videos/${title}/${data.name}`);
     await uploadBytes(storageRef, data);
@@ -40,24 +39,32 @@ export async function createImage (title: string, data: any){
   }
 };
 
+export async function createProfileImage (id: string, img: any){
+  try {
+    const app = initializeApp(firebaseConfig);
+    const storage = getStorage(app);
+    const storageRef = ref(storage, `images/users/${id}/${img.name}`);
+    await uploadBytes(storageRef, img);
+    const downloadUrl = await getDownloadURL(storageRef);
+    return downloadUrl;
+  } catch (error: any) {
+    window.alert("Erro ao fazer upload da midia imagem: " + error.message);
+    return false;
+  }
+};
+
 export async function getAllVideos () {
   try {
     const app = initializeApp(firebaseConfig);
     const storage = getStorage(app);
     const storageRef = ref(storage, 'video');
-
-    //função que coleta todos os videos baseado na referência recebida
     const filesList = await listAll(storageRef);
-
-    //função que transforma a lista de elementos do tipo File em objetos com chaves name e url
     const filesWithUrlPromises = filesList.items.map(async (itemRef: any) => {
     const url = await getDownloadURL(itemRef);
     return { name: itemRef.name, url };
    });
-
    const filesWithUrl: any[] = await Promise.all(filesWithUrlPromises);
    return filesWithUrl;
-
   } catch (error) {
     window.alert('Erro ao listar arquivos: ' + error);
   }

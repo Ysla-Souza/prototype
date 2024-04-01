@@ -1,23 +1,28 @@
 'use client'
-import { deleteVideoById } from "@/firebase/video";
 import { useRouter } from "next/navigation";
 import { IoIosCloseCircleOutline } from "react-icons/io";
 import contextProv from '../context/context';
 import { useContext, useState } from "react";
+import { deleteChatById } from "@/firebase/chat";
+import { authenticate } from "@/firebase/authenticate";
 
-export default function DeleteVideo(props: any) {
+export default function DeleteChat() {
   const router: any = useRouter();
   const context = useContext(contextProv);
   const [loading, setLoading] = useState(false);
-  const { getVideos, showDelete, setShowDelete } = context;
+  const { getChats, getNotifications, showDeleteChat, setShowDeleteChat } = context;
 
-  const deleteVideoFromFirebase = async () => {
-    setLoading(true);
-    await deleteVideoById(showDelete.video.id);
-    getVideos();
-    setLoading(false);
-    router.push('/home');
-    setShowDelete({ show: false, video: {} });
+  const deleteChatFromFirebase = async () => {
+    const auth = await authenticate();
+    if(auth) {
+      setLoading(true);
+      await deleteChatById(showDeleteChat.chat, auth.email);
+      getChats(auth.email);
+      getNotifications(auth.email);
+      setLoading(false);
+      router.push('/chat');
+      setShowDeleteChat({ show: false, chat: {} });
+    } else router.push('/');
   };
 
   return(
@@ -31,27 +36,27 @@ export default function DeleteVideo(props: any) {
             <div className="pt-4 sm:pt-2 px-2 w-full flex justify-end top-0 right-0">
               <IoIosCloseCircleOutline
                 className="text-4xl text-black cursor-pointer"
-                onClick={ () => setShowDelete({ show: false, video: {} })}
+                onClick={ () => setShowDeleteChat({ show: false, chat: {} })}
               />
             </div>
             <div className="pb-5 px-5 w-full">
               <label htmlFor="palavra-passe" className="flex flex-col items-center w-full">
                 <p className="text-black w-full text-center pb-3 pt-5">
-                  Tem certeza que quer excluir permanentemente o Vídeo selecionado?
+                  Tem certeza que quer encerrar esta conversa? Após isso, não será mais possível interagir com a outra parte até que a Empresa demonstre interesse novamente em algum projeto do Desenvolvedor.
                 </p>
               </label>
               { !loading
                 ? <div className="flex w-full gap-2">
                   <button
                     type="button"
-                    onClick={ () => setShowDelete({ show: false, video: {} })}
+                    onClick={ () => setShowDeleteChat({ show: false, chat: {} })}
                     className={`text-black bg-pink-mjg hover:border-red-900 transition-colors cursor-pointer border-2 border-white w-full p-2 mt-6 font-bold`}
                   >
                     Voltar
                   </button>
                   <button
                     type="button"
-                    onClick={ deleteVideoFromFirebase }
+                    onClick={ deleteChatFromFirebase }
                     className={`text-black bg-blue-mjg hover:border-blue-900 transition-colors cursor-pointer border-2 border-white w-full p-2 mt-6 font-bold`}
                   >
                     Excluir

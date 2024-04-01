@@ -28,27 +28,27 @@ export default function StaticReviews(props: any) {
     <div className="flex gap-1 pb-3">
       {
         review >= 1
-        ? <IoIosStar className="text-lg" />
+        ? <IoIosStar className="text-lg text-violet-500" />
         : <IoIosStarOutline className="text-lg" />
       }
       {
         review >= 2
-        ? <IoIosStar className="text-lg" />
+        ? <IoIosStar className="text-lg text-violet-500" />
         : <IoIosStarOutline className="text-lg" />
       }
       {
         review >= 3
-        ? <IoIosStar className="text-lg" />
+        ? <IoIosStar className="text-lg text-violet-500" />
         : <IoIosStarOutline className="text-lg" />
       }
       {
         review >= 4
-        ? <IoIosStar className="text-lg" />
+        ? <IoIosStar className="text-lg text-violet-500" />
         : <IoIosStarOutline className="text-lg" />
       }
       {
         review === 5
-        ? <IoIosStar className="text-lg" />
+        ? <IoIosStar className="text-lg text-violet-500" />
         : <IoIosStarOutline className="text-lg" />
       }
     </div>

@@ -1,7 +1,7 @@
 'use client'
 import { authenticate } from "@/firebase/authenticate";
 import { getUserByEmail } from "@/firebase/user";
-import { getVideoById, updateReview } from "@/firebase/video";
+import { updateReview } from "@/firebase/video";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { IoIosStar, IoIosStarOutline } from "react-icons/io";

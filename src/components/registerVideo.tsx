@@ -4,15 +4,18 @@ import { authenticate } from '@/firebase/authenticate';
 import { registerVideo } from '@/firebase/video';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { IoIosCloseCircleOutline } from 'react-icons/io';
 import { MdDelete } from "react-icons/md";
+import contextProv from '../context/context';
 
-export default function RegisterVideo(props: any) {
-  const { setShowRegister } = props;
+export default function RegisterVideo() {
+  const context = useContext(contextProv);
+  const { getVideos, setShowRegister } = context;
   const [listCategories, setListCategories] = useState<any>(categories.sort());
   const [provCat, setProvCat] = useState<any>('');
   const [loading, setLoading] = useState(false);
+  const [linkImages, setLinkImages] = useState<any>([]);
   const [provDev, setProvDev] = useState('');
   const [defaultSO, setDefaultSO] = useState(['android', 'ios', 'linux', 'macintosh', 'windows']);
   const [provImage, setProvImage] = useState('');
@@ -33,7 +36,6 @@ export default function RegisterVideo(props: any) {
       releaseDate: '',
       publisher: '',
       developers: [],
-      linkImages: [],
       categories: [],
       publishDate: '',
       reviews: [],
@@ -55,40 +57,45 @@ export default function RegisterVideo(props: any) {
   const imageInputRef = useRef<HTMLInputElement | null>(null);
   
   const handleSO = () => {
-    setData({
-      ...data,
-      requirement: {
-        ...data.requirement,
-        operatingSystems: [ ...data.requirement.operatingSystems, provSO ],
-      }}
-    );
-    const newOptions = defaultSO.filter((defSO: any) => defSO !== provSO);
-    setDefaultSO(newOptions);
-    setProvSO('');
+    if (provSO !== '') {
+      setData({
+        ...data,
+        requirement: {
+          ...data.requirement,
+          operatingSystems: [ ...data.requirement.operatingSystems, provSO ],
+        }}
+      );
+      const newOptions = defaultSO.filter((defSO: any) => defSO !== provSO);
+      setDefaultSO(newOptions);
+      setProvSO('');
+    } else window.alert('Necessário selecionar um Sistema Operacional antes.');
   }
 
   const handleCat = () => {
-    setData({
-      ...data,
-      categories: [ ...data.categories, provCat ],
-      }
-    );
-    const newOptions = listCategories.filter((defCat: any) => defCat !== provCat);
-    setListCategories(newOptions);
-    setProvCat('');
+    if (provCat !== '') {
+      setData({ ...data, categories: [ ...data.categories, provCat ] });
+      const newOptions = listCategories.filter((defCat: any) => defCat !== provCat);
+      setListCategories(newOptions);
+      setProvCat('');
+    } else window.alert('Necessário selecionar uma Categoria antes.');
   }
 
   const handleImage = (e: any) => {
     if (e.target.files[0]) setProvImage(e.target.files[0]);
-    
+  };
+
+  const saveImage = () => {
+    if(provImage || provImage !== ''){
+      setLinkImages([...linkImages, provImage]);
+    } else window.alert('Necessário adicionar uma Imagem.');
+    if (imageInputRef.current) imageInputRef.current.value = '';
   };
 
   const generateImage = (file:any) => {
     if (file) {
-      const imageUrl = URL.createObjectURL(file);
       return (
-        <div className="image-container h-20 relative" key={imageUrl}>
-          <Image src={imageUrl} alt="Imagem" className="h-40 object-contain relative" width={500} height={500} />
+        <div className="image-container h-20 relative" key={URL.createObjectURL(file)}>
+          <Image src={URL.createObjectURL(file)} alt="Imagem" className="h-40 object-contain relative" width={500} height={500} />
           <div className="bg-white absolute right-0 top-0 p-2 cursor-pointer">
             <MdDelete
               className="text-2xl"
@@ -99,16 +106,6 @@ export default function RegisterVideo(props: any) {
       );
     }
     return null;
-  };
-
-  const saveImage = () => {
-    if(provImage || provImage !== ''){
-      setData({
-        ...data,
-        linkImages: [...data.linkImages, provImage],
-      });
-    }
-    if (imageInputRef.current) imageInputRef.current.value = '';
   };
 
   const handleVideo = (e: any) => {
@@ -149,10 +146,7 @@ export default function RegisterVideo(props: any) {
   }
 
   const removeImg = (option: string) => {
-    setData({
-      ...data,
-        linkImages: data.linkImages.filter((rmSo: any) => rmSo !== option),
-    })
+    setLinkImages(linkImages.filter((rmSo: any) => rmSo !== option));
   }
 
   const checkRegister = async () => {
@@ -175,7 +169,7 @@ export default function RegisterVideo(props: any) {
       window.alert('Necessario adicionar pelo menos um sistema operacional');
     } else if  (data.linkVideo === '') {
       window.alert('É necessario o carregamento de um video');
-    } else if (data.linkImages.length < 3) {
+    } else if (linkImages.length < 3) {
       window.alert('Necessario adicionar pelo menos 3 imagens.');
     } else if (data.releaseDate === '') {
       window.alert('Necessario preencher uma Data de Criação / Última atualização válida');
@@ -183,9 +177,11 @@ export default function RegisterVideo(props: any) {
       window.alert('Necessario adicionar pelo menos um desenvolvedor');
     } else if (data.categories.length === 0) {
       window.alert('Necessario adicionar pelo menos uma categoria');
-    } else await registerVideo(data);
-    setLoading(false);
-    setShowRegister(false);
+    } else {
+      await registerVideo(data, linkImages);
+      getVideos();
+      setShowRegister(false);
+    } setLoading(false);
   }
 
   return(
@@ -386,19 +382,6 @@ export default function RegisterVideo(props: any) {
                       required 
                     />
                   </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 gap-2">
-                    {
-                      data.linkVideo !== '' &&
-                      <div className="border border-gray-300 rounded text-black h-40 flex items-center">
-                        <div className="image-container w-full h-full relative flex items-center">
-                          <video controls className="h-full object-cover">
-                            <source src={URL.createObjectURL(data.linkVideo)} type="video/mp4" />
-                            Seu navegador não suporta o elemento de vídeo.
-                          </video>
-                        </div>
-                      </div>
-                    }
-                  </div>
                   <div className="w-full">
                     <label htmlFor="image" className="block mt-5 mb-2 text-sm font-medium text-gray-900 dark:text-white">Carregue sua Imagem</label>
                     <div className="flex gap-1 w-full">
@@ -421,9 +404,9 @@ export default function RegisterVideo(props: any) {
                   </div>
                   <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
                     {
-                      data.linkImages.map((linkImg: any, index: number) => (
+                      linkImages.map((linkImg: any, index: number) => (
                         <div key={index} className="border border-gray-300 rounded text-black h-40">
-                          {generateImage(linkImg)}
+                         { generateImage(linkImg) }
                         </div>
                       ))
                     }
@@ -467,7 +450,10 @@ export default function RegisterVideo(props: any) {
                         name="developers"
                         id="developers"
                         value={provDev}
-                        onChange={ (e: any) => setProvDev(e.target.value)}
+                        onChange={ (e: any) => {
+                          const sanitizedValue = e.target.value.replace(/\s+/g, ' ');
+                          setProvDev(sanitizedValue);
+                        }}
                         className="shadow-sm w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light" 
                         placeholder="Insira um Desenvolvedor" 
                         required 
@@ -476,18 +462,20 @@ export default function RegisterVideo(props: any) {
                         type="button"
                         className="border border-gray-300 p-2 text-sm rounded-lg"
                         onClick={() => {
-                        const findItem = data.developers.find((dev: any) => dev === provDev);
-                        if (provDev === '' || provDev === ' ') {
-                          window.alert('Necessário inserir um nome para o Desenvolvedor!')
-                        } else if (findItem) {
-                          window.alert('Desenvolvedor já inserido!')
-                        } else {
-                          setData({
-                            ...data,
-                            developers: [ ...data.developers, provDev],
-                          });
-                        }
-                        setProvDev('');
+                          var text = provDev;
+                          if ((text[text.length -1]) === ' ') text = text.slice(0, -1);
+                          const findItem = data.developers.find((dev: any) => dev === text);
+                          if (text === '' || text === ' ') {
+                            window.alert('Necessário inserir um nome para o Desenvolvedor!')
+                          } else if (findItem) {
+                            window.alert('Desenvolvedor já inserido!')
+                          } else {
+                            setData({
+                              ...data,
+                              developers: [ ...data.developers, text],
+                            });
+                          }
+                          setProvDev('');
                       }}>
                         +
                       </button>
@@ -554,7 +542,7 @@ export default function RegisterVideo(props: any) {
                       className="mt-5 w-full relative inline-flex items-center justify-center p-0.5 mb-2 overflow-hidden text-lg font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800"
                     >
                       <span className="w-full relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
-                      Registrar
+                        { loading ? "Registrando..." : "Registrar" }
                       </span>
                     </button>
                     {

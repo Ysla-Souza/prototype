@@ -1,107 +1,161 @@
 'use client';
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Image from "next/image";
-import { authenticate, signOutFirebase } from "@/firebase/authenticate";
+import { authenticate } from "@/firebase/authenticate";
+import Logout from "./logout";
+import { IoIosCloseCircleOutline, IoIosNotifications } from "react-icons/io";
+import { deleteNotificationById } from "@/firebase/notifications";
 import { useRouter } from "next/navigation";
+import contextProv from '../context/context';
+import { getUserByEmail } from "@/firebase/user";
 
 export default function Navigation(props: { name: string }) {
+  const context = useContext(contextProv);
+  const { allNotifications, getNotifications } = context;
   const { name } = props;
   const [showMenu, setShowMenu] = useState(false);
+  const [showLogout, setShowLogout] = useState(false);
   const [user, setUser] = useState<any>({});
+  const [notifications, setNotifications] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
     const authUser = async () => {
       const auth = await authenticate();
-      if (auth) setUser(auth);
+      if (auth) {
+        getNotifications(auth.email);
+        const user = await getUserByEmail(auth.email);
+        setUser(user);
+      } else router.push('/');
     };
     authUser();
   }, []);
 
-  const logout = async () => {
-    setShowMenu(false);
-    const signOut = await signOutFirebase();
-    if (signOut) router.push("/"); 
-  }
   return(
-    <nav className="fixed w-full border-gray-200 z-50">
-      <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
-        {
-          user && user.photoURL &&
-            <button 
-              type="button"
-              onClick={ () => setShowMenu(!showMenu) }
-              className="pt-1 pb-1 rounded cursor-pointer fixed right-0 top-0 sm:mt-2 sm:mr-3 flex flex-col z-40"
-            >
-              <Image
-                className={`w-10 h-10 p-1 rounded-full ring-2 hover:ring-blue-700 ${showMenu ? 'ring-blue-700' : 'ring-white'} dark:ring-white`}
-                src={user.photoURL}
-                width={500}
-                height={500}
-                alt="Bordered avatar"
-              />
-            </button>
-        } 
-        {
-          user && user.email && !user.photoURL &&
-            <button 
-              type="button"
-              onClick={ () => setShowMenu(!showMenu) }
-              className="rounded cursor-pointer fixed right-0 top-0 sm:mt-3 sm:mr-3 flex flex-col z-40"
-            >
-              <div
-                className={`w-10 capitalize flex items-center justify-center dark:text-white text-black font-bolder h-10 rounded-full ring-2 hover:ring-blue-700 ${showMenu ? 'ring-blue-700' : 'ring-white'} dark:ring-white`}
+    <nav className="fixed w-full bg-black z-50">
+      <div className="w-full flex items-center justify-between p-2">
+        <Image
+          src="/faceInvader.png"
+          className="w-10 h-10 object-cover cursor-pointer"
+          width={2000}
+          height={2000}
+          alt="background image"
+          onClick={ () => router.push('/home') }
+        />
+        <div className="z-50 flex justify-end items-center gap-3">
+          <IoIosNotifications
+            className="text-4xl text-violet-500 cursor-pointer"
+            onClick={ () => {
+              setNotifications(!notifications);
+              if(showMenu) setShowMenu(false);
+            }}
+          />
+          {
+            user && user.imageURL &&
+              <button 
+                type="button"
+                onClick={ () => {
+                  setShowMenu(!showMenu);
+                  if(notifications) setNotifications(false);
+                }}
+                className="rounded-full cursor-pointer sm:mr-3 flex flex-col z-40"
               >
-                {user.email[0]}
-              </div>
-            </button>
-        } 
+                <Image
+                  className={`w-8 h-8 p-1 rounded-full ring-2 ring-violet-500 hover:ring-violet-500`}
+                  src={user.imageURL}
+                  width={500}
+                  height={500}
+                  alt="Bordered avatar"
+                />
+              </button>
+          }
+        </div>
         {
           showMenu &&
-          <div className="absolute right-0 top-0 h-screen flex flex-col bg-white w-full sm:1/3 md:w-1/4 lg:w-1/5">
-            <ul className="flex flex-col font-medium items-center justify-center h-full p-4 md:p-0 border border-gray-100 bg-gray-50 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700 gap-4">
+          <div className="absolute right-0 top-0 h-screen flex flex-col bg-black w-full sm:1/3 md:w-1/4 lg:w-1/5 border-l-2 border-violet-500">
+            <ul className="flex flex-col font-medium items-center justify-center h-full p-4 md:p-0 border border-gray-100 bg-gray-50 md:border-0 md:bg-black dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700 gap-4">
               <Link 
-                href="/"
+                href="/home"
                 onClick={ () => setShowMenu(false) }
-                className={`text-center w-full py-2 px-3  ${name === 'home' ? 'bg-white text-blue-700' : 'bg-blue-700 text-black hover:text-blue-700'} rounded md:bg-transparent md:p-0`}
+                className={`text-center w-full py-2 px-3  ${name === 'home' ? 'bg-black text-violet-500' : 'text-white hover:text-violet-500'} rounded md:bg-transparent md:p-0`}
                 aria-current="page"
               >
                 Início
               </Link>
               <Link  
-                href="/videos"
-                onClick={ () => setShowMenu(false) }
-                className={`text-center w-full py-2 px-3  ${name === 'videos' || name === 'video' ? 'bg-white text-blue-700' : 'bg-blue-700 text-black hover:text-blue-700'} rounded md:bg-transparent md:p-0`}>
-                Meus Vídeos
-              </Link>
-              <Link  
-                href="/companies"
-                onClick={ () => setShowMenu(false) }
-                className={`text-center w-full py-2 px-3  ${name === 'companies' || name === 'company' ? 'bg-white text-blue-700' : 'bg-blue-700 text-black hover:text-blue-700'} rounded md:bg-transparent md:p-0`}>
-                Empresas
-              </Link>
-              <Link  
                 href="/profile"
                 onClick={ () => setShowMenu(false) }
-                className={`text-center w-full py-2 px-3  ${name === 'profile' ? 'bg-white text-blue-700' : 'bg-blue-700 text-black hover:text-blue-700'} rounded md:bg-transparent md:p-0`}>
+                className={`text-center w-full py-2 px-3  ${name === 'profile' ? 'bg-black text-violet-500' : 'text-white hover:text-violet-500'} rounded md:bg-transparent md:p-0`}>
                 Perfil
               </Link>
               <Link  
                 href="/about"
                 onClick={ () => setShowMenu(false) }
-                className={`text-center w-full py-2 px-3  ${name === 'about' ? 'bg-white text-blue-700' : 'bg-blue-700 text-black hover:text-blue-700'} rounded md:bg-transparent md:p-0`}>
+                className={`text-center w-full py-2 px-3  ${name === 'about' ? 'bg-black text-violet-500' : 'text-white hover:text-violet-500'} rounded md:bg-transparent md:p-0`}>
                 Sobre
+              </Link>
+              <Link  
+                href="/companies"
+                onClick={ () => setShowMenu(false) }
+                className={`text-center w-full py-2 px-3  ${name === 'companies' || name === 'company' ? 'bg-black text-violet-500' : 'text-white hover:text-violet-500'} rounded md:bg-transparent md:p-0`}>
+                Empresas
+              </Link>
+              <Link  
+                href="/chat"
+                onClick={ () => setShowMenu(false) }
+                className={`text-center w-full py-2 px-3  ${name === 'chat' ? 'bg-black text-violet-500' : 'text-white hover:text-violet-500'} rounded md:bg-transparent md:p-0`}>
+                Conversas
+              </Link>
+              <Link  
+                href="/developers"
+                onClick={ () => setShowMenu(false) }
+                className={`text-center w-full py-2 px-3  ${name === 'developers' || name === 'video' ? 'bg-black text-violet-500' : 'text-white hover:text-violet-500'} rounded md:bg-transparent md:p-0`}>
+                Desenvolvedores
               </Link>
               <button 
                 type="button"
-                onClick={logout}
-                className="mt-5 w-full text-center py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">
+                onClick={ () => setShowLogout(true)}
+                className="mt-5 w-full text-center py-2 px-3 rounded md:border-0 text-white hover:text-violet-500 md:p-0">
                 Sair
               </button>
             </ul>
           </div>
         }
+        {
+          notifications &&
+          <div className="absolute right-0 top-0 h-screen flex flex-col justify-start bg-black w-full sm:1/3 md:w-1/4 lg:w-1/5 pt-20">
+            <div className="text-black p-2 flex flex-col items-center justify-start gap-3 overflow-y-auto">
+            {
+              allNotifications.length > 0
+              && allNotifications.map((notif: any, index: number) => (
+                  <button
+                    onClick={ () => router.push('/chat')}
+                    type="button"
+                    key={index}
+                    className="border border-1 p-2"
+                  >
+                    <div className="w-full flex items-center justify-end">
+                      <IoIosCloseCircleOutline
+                        className="text-3xl text-black cursor-pointer"
+                        onClick={ async (e: any) => {
+                          e.stopPropagation();
+                          const auth = await authenticate();
+                          if (auth) {
+                            await deleteNotificationById(notif.id);
+                            getNotifications(auth.email);
+                          }
+                        }}
+                      />
+                    </div>
+                    <p className="text-sm w-full text-center">{ notif.message }</p>
+                  </button>
+                ))
+            }
+            </div>
+          </div>
+        }
+        { showLogout && <Logout setShowLogout={setShowLogout} /> }
       </div>
     </nav>
   );
