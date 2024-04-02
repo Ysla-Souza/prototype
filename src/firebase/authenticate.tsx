@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { GoogleAuthProvider, getAuth, onAuthStateChanged, signInWithEmailAndPassword, signInWithRedirect, signOut } from "firebase/auth";
+import { GoogleAuthProvider, getAuth, onAuthStateChanged, sendPasswordResetEmail, signInWithEmailAndPassword, signInWithRedirect, signOut, updatePassword } from "firebase/auth";
 const firebaseConfig = {
     apiKey: "AIzaSyDugptWWK6AM3Dkc9zSt5ZcJAGOyTjSx7w",
     authDomain: "uploadreact-85d68.firebaseapp.com",
@@ -62,6 +62,38 @@ export const handleGoogleLogin = async () => {
     return true;  
   } catch (error) {
     window.alert('Ocorreu um erro ao realizar o login. Por favor, tente novamente.');
+    return false;
+  }
+};
+
+export const changeUserPassword = async (
+  oldPassword: string,
+  email: string,
+  newPassword: string
+) => {
+  const firebaseApp = initializeApp(firebaseConfig);
+  const auth = getAuth(firebaseApp);
+  try {
+    const credenciais = signInWithEmailAndPassword(auth, email, oldPassword);
+    await credenciais;
+    const user: any = auth.currentUser;
+    await updatePassword(user, newPassword);
+    window.alert('Senha alterada com sucesso!');
+    return true
+  } catch (error) {
+    window.alert('Erro ao alterar a senha: (' + error + ')');
+    return false;
+  }
+};
+
+export const forgotPassword = async (email: string) => {
+  const firebaseApp = initializeApp(firebaseConfig);
+  const auth = getAuth(firebaseApp);
+  try {
+    await sendPasswordResetEmail(auth, email);
+    return true;
+  } catch (error) {
+    window.alert('Erro ao enviar e-mail de redefinição de senha: ' + error + ')');
     return false;
   }
 };

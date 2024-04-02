@@ -3,6 +3,7 @@ import { initializeApp } from 'firebase/app';
 import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, getFirestore, query, updateDoc, where } from 'firebase/firestore';
 import { authenticate } from './authenticate';
 import { registerNotification } from './notifications';
+import { getUserByEmail } from './user';
 
 const firebaseConfig = {
   apiKey: "AIzaSyDugptWWK6AM3Dkc9zSt5ZcJAGOyTjSx7w",
@@ -14,17 +15,29 @@ const firebaseConfig = {
   measurementId: "G-X4S0NFGFK4"
 };
 
+function capitalizeWords(str: string) {
+  return str.replace(/\b\w/g, function(char: string) {
+    return char.toUpperCase();
+  });
+}
+
 export async function createChat(message: any) {
   try {
     const firebaseApp = initializeApp(firebaseConfig);
     const db = getFirestore(firebaseApp);
     const chatCollectionRef = collection(db, 'chats');
+    const companyData = await getUserByEmail(message.company);
+    const developerData = await getUserByEmail(message.developer);
     const newChatDocRef = await addDoc(
       chatCollectionRef,
       {
         chat: message.chat,
         company: message.company,
+        companyName: companyData.company,
+        companyImage: companyData.imageURL,
         developer: message.developer,
+        developerName: `${developerData.firstName} ${developerData.lastName}`,
+        developerImage: developerData.imageURL,
         video: [message.video],
       },
     );
@@ -208,20 +221,20 @@ export const demonstrateInterest = async (company: any, developer: any, itemVide
         itemVideo.title,
         {
           type: "general",
-          message: `A Empresa ${company.company} também demonstrou interesse no Projeto ${ itemVideo.title }.`,
+          message: `A Empresa ${ capitalizeWords(company.company) } também demonstrou interesse no Projeto ${ itemVideo.title }.`,
           date,
           user: '',
         }
       );
       await registerNotification(
         {
-          message: `É muito bom ver a ${company.company} demonstrando interesse em mais um projeto do desenvolvedor ${developer.firstName} ${developer.lastName}. Enviamos uma notificação para ele e, para acessar a conversa, basta buscar pelo dev em "Conversas", ou clique aqui nesta notificação para ser redirecionado para lá.`,
+          message: `É muito bom ver a ${capitalizeWords(company.company)} demonstrando interesse em mais um projeto do desenvolvedor ${capitalizeWords(developer.firstName)} ${capitalizeWords(developer.lastName)}. Enviamos uma notificação para ele e, para acessar a conversa, basta buscar pelo dev em "Conversas", ou clique aqui nesta notificação para ser redirecionado para lá.`,
           user: company.email,
         },
       );
       await registerNotification(
         {
-          message: `Olá, tudo bem? A Empresa ${company.company}, que já havia entrado em contato sobre um projeto seu, agora demonstra interesse em um outro projeto que você também publicou, o ${itemVideo.title}. Vá até "Conversas para ter acesso ao chat que criamos para que vocês se comuniquem, ou clique aqui nesta notificação para ser redirecionado.`,
+          message: `Olá, tudo bem? A Empresa ${capitalizeWords(company.company)}, que já havia entrado em contato sobre um projeto seu, agora demonstra interesse em um outro projeto que você também publicou, o ${itemVideo.title}. Vá até "Conversas para ter acesso ao chat que criamos para que vocês se comuniquem, ou clique aqui nesta notificação para ser redirecionado.`,
           user: developer.email,
         },
       );
@@ -248,13 +261,13 @@ export const demonstrateInterest = async (company: any, developer: any, itemVide
       });
       await registerNotification(
         {
-          message: `Uma interação foi criada entre você e o desenvolvedor ${developer.firstName} ${developer.lastName}. Para acessar a conversa, basta buscar pelo dev em "Conversas", ou clique aqui nesta notificação para ser redirecionado para lá.`,
+          message: `Uma interação foi criada entre você e o desenvolvedor ${capitalizeWords(developer.firstName)} ${capitalizeWords(developer.lastName)}. Para acessar a conversa, basta buscar pelo dev em "Conversas", ou clique aqui nesta notificação para ser redirecionado para lá.`,
           user: company.email,
         },
       );
       await registerNotification(
         {
-          message: `Olá, tudo bem? A Empresa ${company.company} demonstrou interesse no seu projeto ${itemVideo.title}. Vá até "Conversas para ter acesso ao chat que criamos para que vocês se comuniquem, ou clique aqui nesta notificação para ser redirecionado para lá.`,
+          message: `Olá, tudo bem? A Empresa ${capitalizeWords(company.company)} demonstrou interesse no seu projeto ${itemVideo.title}. Vá até "Conversas para ter acesso ao chat que criamos para que vocês se comuniquem, ou clique aqui nesta notificação para ser redirecionado para lá.`,
           user: developer.email,
         },
       );
