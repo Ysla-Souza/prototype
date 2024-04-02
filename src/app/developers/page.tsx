@@ -7,6 +7,7 @@ import Image from "next/image";
 import { getDevelopers } from "@/firebase/user";
 import Footer from "@/components/footer";
 import { MdOutlineFilterList } from "react-icons/md";
+import Loading from "@/components/loading";
 
 export default function Developers() {
   const [developers, setDevelopers] = useState<any>();
@@ -20,11 +21,11 @@ export default function Developers() {
     const authUser = async () => {
       const auth = await authenticate();
       if (auth) {
-        setShowData(true);
         const devs = await getDevelopers();
         const filtered = devs.filter((dev: any) => dev.email !== auth.email)
         setDevelopers(filtered);
         setAllDevelopers(filtered);
+        setShowData(true);
       }
       else router.push("/");
     };
@@ -43,101 +44,101 @@ export default function Developers() {
     return formattedDevelopers.join(' - ');
   };
 
-  function getFirst100Characters(inputString: string) {
-    if (inputString.length <= 100) {
-      return inputString;
-    } else {
-      return inputString.slice(0, 100) + "...";
-    }
-  }
-
   return(
-    <div className={`w-full ${showData ? 'min-h-screen' : 'h-80vh'}`}>
+    <div className={`w-full ${showData ? 'h-full' : 'h-80vh'}`}>
       <Navigation name="developers" />
-      <Image
-        src=""
-        className="w-full object-cover h-20vh bg-gray-500"
-        width={1500}
-        height={1500}
-        alt="paisagem"
-      />
-      <div className="w-full h-full items-center justify-center flex w-wrap py-5 px-5 sm:px-20 lg:px-28 bg-gray-200">
-        {
-          !showData 
-          ? <div className="flex items-center justify-center">
-              <span className="loader p-6 space-y-4 md:space-y-6 sm:p-8" />
-            </div>                
-          : <div className="w-full h-screen">
-              <div className="flex justify-between items-center w-full">
-                <h2 className="text-center sm:text-left mt-3 mb-5 text-2xl">Developers</h2>
-              </div>
-              <MdOutlineFilterList
-                className="text-xl mb-5 cursor-pointer"
-                onClick={() => setShowFilter(!showFilter)}
-              />
-              {
-                showFilter &&
-                <div className="w-full mb-3">
-                  <input
-                    name="categories"
-                    id="categories"
-                    value={nameDev}
-                    placeholder="Digite aqui um Nome"
-                    onChange={(e: any) => {
-                      if (e.target.value.length === '') setDevelopers(allDevelopers);
-                      else {
-                        setDevelopers(allDevelopers.filter((dev: any) => dev.firstName.toLowerCase().includes(e.target.value.toLowerCase()) || dev.lastName.toLowerCase().includes(e.target.value.toLowerCase())));
-                      }
-                      setNameDev(e.target.value);
+      {
+        !showData 
+        ? <div className="break-words h-screen flex items-center justify-center bg-dice w-full bg-center">
+          <Loading />               
+        </div>
+        : <div className="break-words w-full h-full items-center justify-center flex flex-col py-5 bg-black">
+            <div className="break-words w-full h-35vh relative bg-dice bg-cover" />
+            <div className={`px-5 bg-black w-full ${developers && developers.length === 0 ? 'h-screen' : ''}`}>
+              <div className="break-words w-full pt-5">
+                  <div className="break-words flex justify-between items-center w-full">
+                    <h2 className="break-words text-left text-white sm:text-left mt-3 mb-5 text-2xl">Desenvolvedores</h2>
+                  </div>
+                  <MdOutlineFilterList
+                    className="break-words text-xl mb-5 cursor-pointer text-white"
+                    onClick={() => {
+                      setShowFilter(!showFilter);
+                      setNameDev('');
+                      setDevelopers(allDevelopers);
                     }}
-                    className="shadow-sm w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
-                    required 
                   />
-                </div>
-              }
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-                {
-                  developers
-                  && developers.length > 0
-                  && developers.map((developer: any, index: number) => (
-                    <button
-                      type="button"
-                      onClick={() => router.push(`/developers/${developer.id}`)}
-                      key={index}
-                      className="border border-black p-2"
-                    >
-                      <div className="mx-auto w-28 h-28 border-4 border-white rounded-full overflow-hidden bg-black flex items-center justify-center">
-                        {
-                          developer.imageURL !== undefined && developer.imageURL !== ''
-                          ? <Image
-                            width={1000}
-                            height={1000}
-                            className="object-cover object-top w-full"
-                            src={developer.imageURL}
-                            alt={developer.firstName}
-                          />
-                          : <p className="text-white text-4xl">
-                              { developer.firstName[0] }
-                            </p>
-                        }
-                      </div>
-                      <div className="w-full text-center my-2">
-                        { developer.firstName } { developer.lastName }
-                      </div>
-                      <div className="text-center w-full mb-2">
-                        { generateList(developer.skills) }
-                      </div>
-                      <div className="text-center w-full my-5">
-                        { getFirst100Characters(developer.description) }
-                      </div>
-                    </button>
-                  ))
-                }
+                  {
+                    showFilter &&
+                    <div className="break-words w-full mb-3">
+                      <input
+                        name="categories"
+                        id="categories"
+                        value={nameDev}
+                        placeholder="Digite aqui um Nome"
+                        onChange={(e: any) => {
+                          if (e.target.value.length === '') setDevelopers(allDevelopers);
+                          else {
+                            setDevelopers(allDevelopers.filter((dev: any) => dev.firstName.toLowerCase().includes(e.target.value.toLowerCase()) || dev.lastName.toLowerCase().includes(e.target.value.toLowerCase())));
+                          }
+                          setNameDev(e.target.value);
+                        }}
+                        className="break-words shadow-sm w-full bg-prot-dark border text-white text-sm rounded-lg block w-full p-2.5 placeholder-gray-300"
+                        required 
+                      />
+                    </div>
+                  }
+                  <div className="break-words grid grid-cols-1 gap-3 w-full">
+                    {
+                      developers
+                      && developers.length > 0
+                      && developers.map((developer: any, index: number) => (
+                        <button type="button"
+                          onClick={ () => router.push(`/developers/${developer.id}`)}
+                          key={index}
+                          className="break-words border border-violet-500 hover:border-white transition-colors duration-500 border-2 p-4 grid grid-cols-1 sm:grid-cols-5 cursor-pointer"
+                        >
+                          <div className="break-words flex w-full h-full items-center justify-center">
+                            <div className="break-words mx-auto border-4 border-violet-500 rounded-full overflow-hidden bg-black flex items-center justify-center w-28 h-28">
+                              {
+                                developer.imageURL !== undefined && developer.imageURL !== ''
+                                ? <Image
+                                  width={1000}
+                                  height={1000}
+                                  className="break-words object-cover object-top w-28 h-28"
+                                  src={developer.imageURL}
+                                  alt={developer.firstName}
+                                />
+                                : <p className="break-words text-white text-4xl">
+                                    {developer.firstName[0]}
+                                  </p>
+                              }
+                            </div>
+                          </div>
+                          <div className="break-words col-span-4">
+                            <div className="break-words w-full text-center sm:text-left my-2 text-white capitalize text-violet-500 text-xl">
+                              { developer.firstName } { developer.lastName }
+                            </div>
+                            <div className="break-words text-center sm:text-left text-sm text-violet-400 w-full mb-2">
+                              { generateList(developer.skills) }
+                            </div>
+                            <div className="break-words text-center sm:text-left text-white w-full my-5 break-words">
+                              { developer.description }
+                            </div>
+                          </div>
+                        </button>
+                      ))
+                    }
+                  </div>
+                  { developers && developers.length === 0 &&
+                    <div className="break-words text-white text-2xl pt-10">
+                      Nenhum Desenvolvedor encontrado
+                    </div>
+                  }
               </div>
             </div>
-          }
-      </div>
+          </div>
+        }
       <Footer />
     </div>
     );
-  }
+}

@@ -1,4 +1,6 @@
 'use client'
+import Construction from "@/components/construction";
+import Loading from "@/components/loading";
 import Navigation from "@/components/navigation";
 import { authenticate } from "@/firebase/authenticate";
 import { useRouter } from "next/navigation";
@@ -19,16 +21,16 @@ export default function About() {
   }, []);
 
   return(
-    <div className="w-full h-screen">
+    <div className="break-words w-full h-screen">
       <Navigation name="about" />
-      <div className="w-full h-full items-center justify-center flex flex-col w-wrap py-10 px-32">
+      <div className="break-words bg-dice w-full h-full items-center justify-center flex flex-col w-wrap py-10 px-32">
         {
             !showData 
-              ? <div className="flex items-center justify-center">
-                  <span className="loader p-6 space-y-4 md:space-y-6 sm:p-8" />
-                </div>                
-              : <div>
-                  About
+              ? <div className="break-words h-screen flex items-center justify-center w-full">
+                  <Loading />               
+                </div>                 
+              : <div className="break-words w-full">
+                  <Construction />
                 </div>
         }
       </div>

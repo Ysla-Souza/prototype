@@ -31,3 +31,73 @@ body {
     text-wrap: balance;
   }
 }
+
+.constr-gif-wolf {
+  width: 30vh;
+}
+
+.constr-gif-wolf {
+  animation: run linear 5s infinite;
+}
+
+.constr-gif-wolf:nth-child(01) {
+  animation: run linear 7s infinite;
+}
+
+.constr-gif-wolf:nth-child(02) {
+  animation: run linear 2s infinite;
+}
+
+.constr-gif-wolf:nth-child(03) {
+  animation: run linear 4s infinite;
+}
+
+@keyframes run {
+  0% {
+    transform: translate(-75px, 0px);
+    opacity: 0;
+  }
+
+  25% {
+    transform: translate(-50px, 0px);
+  }
+
+  50% {
+    transform: translate(-25px, 0px);
+    opacity: 1;
+  }
+
+  75% {
+    transform: translate(0px, 0px);
+  }
+
+  100% {
+    transform: translate(25px, 0px);
+    opacity: 0;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .construction-section {
+    height: 100vh;
+    flex-direction: column;
+    h2 {
+      font-size: 1.1rem;
+    }
+  }
+
+  .constr-gif-wolf:nth-child(02) {
+    display: none;
+  }
+  
+  .constr-gif-wolf:nth-child(03) {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 900px) {
+ 
+  .constr-gif-wolf:nth-child(03) {
+    display: none;
+  }
+}

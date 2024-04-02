@@ -14,10 +14,11 @@ import Image from "next/image";
 import Link from "next/link";
 import contextProv from '../../context/context';
 import RegisterVideo from "@/components/registerVideo";
+import ChangePassword from "@/components/changePassword";
 
 export default function Profile() {
   const context = useContext(contextProv);
-  const { showRegister, setShowRegister } = context;
+  const { showRegister, setShowRegister, setShowChangePassword, showChangePassword } = context;
   const [userData, setUserData] = useState<any>({
     id: '',
     firstName: '',
@@ -61,81 +62,81 @@ export default function Profile() {
   };
 
   return(
-    <div className="w-full min-h-screen bg-black">
+    <div className="break-words w-full min-h-screen bg-black">
       <Navigation name="profile" />
-      <div className="w-full h-full items-center justify-start flex flex-col pb-10 min-h-screen">
+      <div className="break-words w-full h-full items-center justify-start flex flex-col pb-10 min-h-screen">
         {
             !showData 
-              ? <div className="h-80vh flex items-center justify-center">
+              ? <div className="break-words h-screen flex items-center justify-center bg-dice w-full bg-center">
                   <Loading />               
                 </div>
-              : <div className="w-full flex items-start h-full">
+              : <div className="break-words w-full flex items-start h-full">
                   {
                     userData &&
-                    <div className="w-full h-full">
-                      <div
-                        className="w-full text-white">
-                        <div className="h-35vh bg-dice bg-cover" />
-                        <div className="mx-auto w-32 h-32 relative -mt-16 border-4 border-violet-500 rounded-full overflow-hidden bg-black flex items-center justify-center">
+                    <div className="break-words w-full h-full">
+                      <div className="break-words w-full text-white">
+                        <div className="break-words h-35vh bg-dice bg-cover" />
+                        <div className="break-words mx-auto w-32 h-32 relative -mt-16 border-4 border-violet-500 rounded-full overflow-hidden bg-black flex items-center justify-center">
                           {
                             userData.imageURL
                             && <Image
                               width={1000}
                               height={1000}
-                              className="object-cover object-top w-full"
+                              className="break-words object-cover w-full h-full"
                               src={userData.imageURL}
-                              alt={userData.firstName}
+                              alt={userData.typeUser === 'developer' ? userData.firstName : userData.company}
                             />
                           }
                         </div>
-                        <div className="w-full flex flex-col items-center justify-center mb-5">
-                          <div className="text-center mt-2 w-4/5 sm:w-1/3">
+                        <div className="break-words w-full flex flex-col items-center justify-center mb-5">
+                          <div className="break-words text-center mt-2 w-4/5 sm:w-1/3">
                             {
                               userData.typeUser === 'developer'
-                              ? <h2 className="font-semibold capitalize">{userData.firstName} {userData.lastName}</h2>
-                              : <h2 className="font-semibold capitalize">{userData.company}</h2>
+                              ? <h2 className="break-words font-semibold capitalize">{userData.firstName} {userData.lastName}</h2>
+                              : <h2 className="break-words font-semibold capitalize">{userData.company}</h2>
                             }
                             {
-                              userData.typeUser === 'developer'
-                              && <p className="text-violet-400">{
+                              <p className="break-words text-violet-400">{
                                 userData.skills === '' || !userData.skills
-                                ? 'Ainda sem Habilidades'
+                                ? <span>{ userData.typeUser === 'developer' ? 'Ainda sem Habilidades' : 'Ainda sem ramo de Atuação' }</span>
                                 : generateList(userData.skills)
                                 }</p>
                             }
-                            {
-                              userData.typeUser === 'company'
-                              && <p className="text-violet-400">{
-                                userData.categories === '' || !userData.categories
-                                ? 'Ainda sem ramo de Atuação'
-                                : generateList(userData.categories)
-                                }</p>
-                            }
                           </div>
-                          <div className="text-center mt-5 w-full w-4/5 sm:w-2/3">
-                            <h2 className="font-semibold">{
+                          <div className="break-words text-center mt-5 w-full w-4/5 sm:w-2/3 px-5">
+                            <h2 className="break-words font-semibold break-words">{
                               userData.description === '' || !userData.description
                               ? 'Ainda sem Bio'
                               : userData.description
                             }</h2>
                           </div>
                         </div>
-                        <div className="mt-2 flex items-center justify-center">
+                        <div className="break-words mt-2 flex items-center justify-center gap-2">
                           <button
                             onClick={() => setShowEditProfile(true) }
-                            className="relative inline-flex items-center justify-center p-0.5 mb-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 hover:from-blue-500 hover:to-purple-600 hover:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800"
+                            className="break-words relative inline-flex items-center justify-center p-0.5 mb-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 hover:from-blue-500 hover:to-purple-600 hover:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800"
                           >
-                            <span className="relative px-5 py-2.5 transition-all ease-in duration-75 text-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
+                            <span className="break-words relative px-5 py-2.5 transition-all ease-in duration-75 text-white rounded-md group-hover:bg-opacity-0">
                               Editar Perfil
+                            </span>
+                          </button>
+                          <button
+                            onClick={
+                              () => setShowChangePassword({ show: true, user: userData })
+                            }
+                            className="break-words relative inline-flex items-center justify-center p-0.5 mb-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 hover:from-blue-500 hover:to-purple-600 hover:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800"
+                          >
+                            <span className="break-words relative px-5 py-2.5 transition-all ease-in duration-75 text-white rounded-md group-hover:bg-opacity-0">
+                              Alterar Senha
                             </span>
                           </button>
                         </div>
                         {
                           userData.typeUser === 'developer' &&
-                          <ul className="pb-4 mt-2 text-gray-700 flex items-center justify-around">
-                            <li className="flex flex-col items-center justify-around">
-                              <MdVideocam className="text-violet-500 text-xl" />
-                              <div className="text-white">{ listVideos.length }</div>
+                          <ul className="break-words pb-4 mt-2 text-gray-700 flex items-center justify-around">
+                            <li className="break-words flex flex-col items-center justify-around">
+                              <MdVideocam className="break-words text-violet-500 text-xl" />
+                              <div className="break-words text-white">{ listVideos.length }</div>
                             </li>
                           </ul>
                         }
@@ -145,12 +146,12 @@ export default function Profile() {
                         <div>
                           {
                             listVideos.length > 0
-                            ? <div className="grid grid-cols-1 gap-5 cursor-pointer px-5">
+                            ? <div className="break-words grid grid-cols-1 gap-5 cursor-pointer px-5">
                                 <button
                                   onClick={ () => setShowRegister(true) }
-                                  className="relative inline-flex items-center justify-center p-0.5 mb-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 hover:from-blue-500 hover:to-purple-600 hover:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800"
+                                  className="break-words relative inline-flex items-center justify-center p-0.5 mb-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 hover:from-blue-500 hover:to-purple-600 hover:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800"
                                 >
-                                  <span className="relative px-5 py-2.5 transition-all ease-in duration-75 text-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
+                                  <span className="break-words relative px-5 py-2.5 transition-all ease-in duration-75 text-white rounded-md group-hover:bg-opacity-0">
                                     Carregar Vídeo
                                   </span>
                                 </button>
@@ -164,7 +165,7 @@ export default function Profile() {
                                   ))
                                 }
                               </div>
-                            : <div className="w-full text-center">Nenhum video cadastrado. Que tal adicionar um vídeo ao seu perfil clicando <Link href="/home" className="underline">aqui</Link>? </div>
+                            : <div className="break-words w-full text-center">Nenhum video cadastrado. Que tal adicionar um vídeo ao seu perfil clicando <Link href="/home" className="break-words underline">aqui</Link>? </div>
                           }
                         </div>
                       }
@@ -182,6 +183,7 @@ export default function Profile() {
         />
       }
       { showRegister && <RegisterVideo /> }
+      { showChangePassword.show && <ChangePassword /> }
       <Footer />
     </div>
     );

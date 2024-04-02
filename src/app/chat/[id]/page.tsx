@@ -9,6 +9,7 @@ import { IoIosSend } from 'react-icons/io';
 import Navigation from '@/components/navigation';
 import { getHoraOficialBrasil, sendMessage } from '@/firebase/chat';
 import { getUserByEmail } from '@/firebase/user';
+import Loading from '@/components/loading';
 
 const firebaseConfig = initializeApp({
   apiKey: "AIzaSyDugptWWK6AM3Dkc9zSt5ZcJAGOyTjSx7w",
@@ -73,8 +74,8 @@ export default function SessionId({ params } : { params: { id: string } }) {
   const messageForm = (index: number, msg: any, color: string) => {
     if (msg.type === 'general') {
       return(
-        <div key={index} className="my-3 w-full flex justify-center text-gray-400">
-          <div className="bg-gray-whats text-sm text-center rounded-xl w-11/12 sm:w-7/12 md:w-7/12 p-2 mb-2 flex flex-col">
+        <div key={index} className="break-words my-3 w-full flex justify-center text-gray-400">
+          <div className="break-words bg-black text-sm text-center rounded-xl w-11/12 sm:w-7/12 md:w-7/12 p-2 mb-2 flex flex-col">
             <span>{ msg.message }</span>
             <span>{ msg.date && msg.date }</span>
           </div>
@@ -82,19 +83,19 @@ export default function SessionId({ params } : { params: { id: string } }) {
       )
     }
     return(
-      <div key={index} className={`w-full flex ${color === 'green' ? 'justify-end' : 'justify-start'} text-white`}>
-        <div className={`${color === 'green' ? 'bg-green-whats': 'bg-gray-whats'} rounded-xl w-11/12 sm:w-7/12 md:w-7/12 p-3 mb-3`}>
+      <div key={index} className={`w-full flex ${color === 'current' ? 'justify-end' : 'justify-start'} text-white`}>
+        <div className={`${color === 'current' ? 'bg-prot-light': 'bg-prot-dark'} rounded-xl w-11/12 sm:w-7/12 md:w-7/12 p-3 mb-3`}>
           {
             color === 'gray' &&
-            <div className="pb-2 capitalize font-bold">
+            <div className="break-words pb-2 capitalize font-bold">
               { msg.user }
             </div>
           }
           <div>
             { msg.message }
           </div>
-          <div className="flex justify-end pt-2">
-            <span className="w-full text-right text-sm flex justify-end">
+          <div className="break-words flex justify-end pt-2">
+            <span className="break-words w-full text-right text-sm flex justify-end">
               { msg.date && msg.date }
             </span>
           </div>
@@ -104,14 +105,16 @@ export default function SessionId({ params } : { params: { id: string } }) {
   }
 
   const handleSendMessage = async () => {
-    const date = await getHoraOficialBrasil();
-    sendMessage(params.id, {
-      message: text,
-      type: 'user',
-      date,
-      user: userName,
-    });
-    setText('');
+    if (text !== '' && text !== ' ') {
+      const date = await getHoraOficialBrasil();
+      sendMessage(params.id, {
+        message: text,
+        type: 'user',
+        date,
+        user: userName,
+      });
+      setText('');
+    }
     scrollToBottom();
   };
 
@@ -124,41 +127,43 @@ export default function SessionId({ params } : { params: { id: string } }) {
   };
 
   return (
-    <div className="h-screen overflow-y-auto bg-black bg-cover bg-top">
+    <div className="break-words h-screen overflow-y-auto bg-dice bg-cover bg-top">
       <Navigation name="chat" />
       {
         showData
-        ? <div className="flex h-full">
-            <div className="flex flex-col h-full w-full relative">
+        ? <div className="break-words flex h-full pt-14 bg-black/90">
+            <div className="break-words flex flex-col h-full w-full relative">
               <div id="messages-container" className={`relative h-screen overflow-y-auto pt-2 px-2`}>
                 {
                   session && session.length > 0 && session[0].chat && session[0].chat.length >= 0
                   ? session[0] && session[0].chat.map((msg: any, index: number) => {
                     if (userName !== '' && userName === msg.user.toLowerCase()) {
-                      return messageForm(index, msg, 'green');
-                    } return messageForm(index, msg, 'gray');
+                      return messageForm(index, msg, 'current');
+                    } return messageForm(index, msg, 'other');
                   })
-                  : <div className="bg-black/60 text-white h-90vh flex items-center justify-center flex-col">
-                      <span className="loader z-50" />
+                  : <div className="break-words bg-black/60 text-white h-90vh flex items-center justify-center flex-col">
+                      <span className="break-words loader z-50" />
                     </div>
                 }
               </div>
-              <div className="w-full bg-black p-2 flex flex-col gap-2 justify-center items-center min-h-10vh">
-                <div className="flex w-full items-end relative">
-                  <textarea
-                    rows={Math.max(1, Math.ceil(text.length / 40))}
-                    className="w-full p-2 text-black"
-                    value={text}
-                    onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
-                      const sanitizedValue = e.target.value.replace(/\s+/g, ' ');
-                      setText(sanitizedValue);
-                    }}
-                    onKeyDown={handleKeyDown}
-                  />
-                  <div className="pl-2 gap-2 flex">
-                    <div className="text-xl border border-white flex justify-center hover:bg-white transition-colors text-white hover:text-black">
+              <div className="break-words w-full bg-black p-2 flex flex-col gap-2 justify-center items-center min-h-10vh">
+                <div className="break-words flex w-full items-end relative">
+                  <div className="break-words border border-violet-500 w-full">
+                    <input
+                      type="text"
+                      className="break-words h-full w-full text-white bg-black p-2 outline-none mb-0"
+                      value={text}
+                      onChange={(e: any) => {
+                        const sanitizedValue = e.target.value.replace(/\s+/g, ' ');
+                        setText(sanitizedValue);
+                      }}
+                      onKeyDown={handleKeyDown}
+                    />
+                  </div>
+                  <div className="break-words pl-2 gap-2 flex h-full">
+                    <div className="break-words text-xl border border-white flex justify-center hover:bg-prot-dark transition-colors text-white">
                       <button
-                        className="p-2"
+                        className="break-words p-2"
                         id="sendMessage"
                         onClick={ handleSendMessage }
                       >
@@ -170,8 +175,8 @@ export default function SessionId({ params } : { params: { id: string } }) {
               </div>
             </div>
           </div>
-        : <div className="bg-black/80 text-white h-screen flex items-center justify-center flex-col">
-            <span className="loader z-50" />
+        : <div className="break-words bg-black/80 text-white h-screen flex items-center justify-center flex-col">
+            <Loading />
           </div>
       }
     </div>
