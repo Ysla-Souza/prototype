@@ -45,50 +45,50 @@ export default function UpdateReview(props: any) {
       {
         review >= 1
         ? <IoIosStar
-            className="text-2xl cursor-pointer"
+            className="text-2xl cursor-pointer text-violet-500"
             onClick={() => updateValue(0)}
           />
-        : < IoIosStarOutline className="text-2xl cursor-pointer"
+        : < IoIosStarOutline className="text-2xl cursor-pointer text-violet-500"
             onClick={() => updateValue(1)}
           />
       }
       {
         review >= 2
         ? <IoIosStar
-            className="text-2xl cursor-pointer"
+            className="text-2xl cursor-pointer text-violet-500"
             onClick={() => updateValue(2)}
           />
-        : < IoIosStarOutline className="text-2xl cursor-pointer"
+        : < IoIosStarOutline className="text-2xl cursor-pointer text-violet-500"
             onClick={() => updateValue(2)}
           />
       }
       {
         review >= 3
         ? <IoIosStar
-            className="text-2xl cursor-pointer"
+            className="text-2xl cursor-pointer text-violet-500"
             onClick={() => updateValue(3)}
           />
-        : < IoIosStarOutline className="text-2xl cursor-pointer"
+        : < IoIosStarOutline className="text-2xl cursor-pointer text-violet-500"
             onClick={() => updateValue(3)}
           />
       }
       {
         review >= 4
         ? <IoIosStar
-            className="text-2xl cursor-pointer"
+            className="text-2xl cursor-pointer text-violet-500"
             onClick={() => updateValue(4)}
           />
-        : < IoIosStarOutline className="text-2xl cursor-pointer"
+        : < IoIosStarOutline className="text-2xl cursor-pointer text-violet-500"
             onClick={() => updateValue(4)}
           />
       }
       {
         review === 5
         ? <IoIosStar
-            className="text-2xl cursor-pointer"
+            className="text-2xl cursor-pointer text-violet-500"
             onClick={() => updateValue(5)}
           />
-        : < IoIosStarOutline className="text-2xl cursor-pointer"
+        : < IoIosStarOutline className="text-2xl cursor-pointer text-violet-500"
             onClick={() => updateValue(5)}
           />
       }

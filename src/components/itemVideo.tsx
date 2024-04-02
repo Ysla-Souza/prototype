@@ -56,29 +56,29 @@ export default function ItemVideo(props: any) {
   };
 
   return (
-    <div className="w-full bg-black border border-violet-400 relative flex items-center p-3">
-      <div className="w-72 h-40">
-        <video controls className="w-full h-full object-contain">
-          <source src={itemVideo.linkVideo} type="video/mp4" className="h-full" />
+    <div className="break-words w-full bg-black border border-violet-400 relative flex flex-col sm:flex-row items-center p-3">
+      <div className="break-words w-full sm:w-72 h-40">
+        <video controls className="break-words w-full h-full object-contain">
+          <source src={itemVideo.linkVideo} type="video/mp4" className="break-words h-full" />
             Seu navegador não suporta o elemento de vídeo.
         </video>
       </div>
       <button
         type="button"
         onClick={ () => router.push(`/videos/${itemVideo.id}`) } 
-        className="px-5 pb-1 text-left w-full"
+        className="break-words px-5 pb-1 text-left w-full"
       >
-        <h5 className="mb-2 text-violet-400 text-lg font-bold tracking-tight text-gray-900 dark:text-white">{ itemVideo.title }</h5>
-        <p className="font-normal text-violet-400 dark:text-gray-400 break-words text-sm">{generateListItems('Categorias: ', itemVideo.categories)}.</p>
-        <p className="font-normal text-violet-400 dark:text-gray-400 break-words text-sm">{generateListItems('Desenvolvido por: ', itemVideo.developers)}.</p>
-        <p className="mb-3 font-normal text-violet-400 dark:text-gray-400 break-words text-sm">
-          <span className="pr-1">Publicado por:</span>
+        <h5 className="break-words mb-2 text-violet-400 text-lg font-bold tracking-tight text-gray-900 dark:text-white break-words">{ itemVideo.title }</h5>
+        <p className="break-words font-normal text-violet-400 dark:text-gray-400 break-words text-sm break-words">{generateListItems('Categorias: ', itemVideo.categories)}.</p>
+        <p className="break-words font-normal text-violet-400 dark:text-gray-400 break-words text-sm break-words">{generateListItems('Desenvolvido por: ', itemVideo.developers)}.</p>
+        <p className="break-words mb-3 font-normal text-violet-400 dark:text-gray-400 break-words text-sm ">
+          <span className="break-words pr-1">Publicado por:</span>
           <button
             onClick={ (e: any) => {
               e.stopPropagation();
               router.push(`/developers/${developer.id}`);
             }}
-            className="underline capitalize"
+            className="break-words underline capitalize break-words"
           >
             {developer.firstName} {developer.lastName}
           </button>
@@ -91,19 +91,19 @@ export default function ItemVideo(props: any) {
           && props.loggedUser.typeUser === 'developer'
           && props.loggedUser.email === itemVideo.user
           && 
-          <div className="absolute bottom-0 right-0 m-3 flex items-center">
-            <div className="p-1">
+          <div className="break-words absolute bottom-0 right-0 m-3 flex items-center">
+            <div className="break-words p-1">
               <FaEdit
-                className="cursor-pointer text-violet-400 text-xl"
+                className="break-words cursor-pointer text-violet-400 text-xl"
                 onClick={(e) => {
                   setShowEdit({ show: true, video: itemVideo});
                   e.stopPropagation();
                 }}
               />
             </div>
-            <div className="p-1">
+            <div className="break-words p-1">
               <MdDelete
-                className="cursor-pointer text-lg text-violet-400 text-xl"
+                className="break-words cursor-pointer text-lg text-violet-400 text-xl"
                 onClick={(e) => {
                   setShowDelete({ show: true, video: itemVideo});
                   e.stopPropagation();
@@ -112,7 +112,7 @@ export default function ItemVideo(props: any) {
             </div>
           </div>
         }
-        <div className="w-full">
+        <div className="break-words w-full">
           {
             props.loggedUser
             && props.loggedUser.email !== ''
@@ -126,9 +126,9 @@ export default function ItemVideo(props: any) {
                     onClick={(e) => {
                       e.stopPropagation();
                     }}
-                    className="w-full relative inline-flex items-center justify-center p-0.5 mb-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800"
+                    className="break-words relative inline-flex items-center justify-center p-0.5 mb-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 hover:from-blue-500 hover:to-purple-600 hover:text-white focus:ring-4 focus:outline-none focus:ring-blue-300"
                   >
-                    <span className="w-full relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
+                    <span className="break-words relative px-5 py-2.5 transition-all ease-in duration-75 text-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
                       Carregando...
                     </span>
                   </button>
@@ -138,9 +138,9 @@ export default function ItemVideo(props: any) {
                         router.push(`/chat/${chatExistent.id}`);
                         e.stopPropagation();
                       }}
-                      className="w-full relative inline-flex items-center justify-center p-0.5 mb-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800"
+                      className="break-words relative inline-flex items-center justify-center p-0.5 mb-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 hover:from-blue-500 hover:to-purple-600 hover:text-white focus:ring-4 focus:outline-none focus:ring-blue-300"
                     >
-                      <span className="w-full relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
+                      <span className="break-words relative px-5 py-2.5 transition-all ease-in duration-75 text-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
                         Ir para a conversa
                       </span>
                     </button>
@@ -149,9 +149,9 @@ export default function ItemVideo(props: any) {
                         interest();
                         e.stopPropagation();
                       }}
-                      className="relative inline-flex items-center justify-center p-0.5 mb-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 hover:from-blue-500 hover:to-purple-600 hover:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800"
+                      className="break-words relative inline-flex items-center justify-center p-0.5 mb-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 hover:from-blue-500 hover:to-purple-600 hover:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800"
                     >
-                      <span className="relative px-5 py-2.5 transition-all ease-in duration-75 text-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
+                      <span className="break-words relative px-5 py-2.5 transition-all ease-in duration-75 text-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
                         Estou interessado
                       </span>
                     </button>

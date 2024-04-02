@@ -1,7 +1,7 @@
 'use client'
 import { categories } from "@/categories";
 import { updateUserById } from "@/firebase/user";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { IoIosCloseCircleOutline } from "react-icons/io";
 import { MdDelete } from "react-icons/md";
 
@@ -12,16 +12,20 @@ export default function EditProfile(props: any) {
   const [provCat, setProvCat] = useState('');
   const [error, setError] = useState<string>('');
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    setListCategories(listCategories.filter((cat: string) => !props.userData.skills.includes(cat)));
+  }, []);
   
   const updateUser = async () => {
     setLoading(true);
     setError('');
-    if(userData.firstName.length < 2 && userData.typeUser === 'developer') {
+    if(userData.firstName && userData.firstName.length < 2 && userData.typeUser === 'developer') {
       setError('Necessário inserir um Nome com mais de 2 caracteres');
-    } else if(userData.company.length < 2 && userData.typeUser === 'company') {
-      setError('Necessário inserir um Nome para a Empresa com pelo menos 2 caracteres');
-    } else if(userData.lastName.length < 2) {
+    } else if(userData.lastName && userData.lastName.length < 2) {
       setError('Necessário inserir um Sobrenome com mais de 2 caracteres');
+    } else if(userData.company && userData.company.length < 2 && userData.typeUser === 'company') {
+      setError('Necessário inserir um Nome para a Empresa com pelo menos 2 caracteres');
     } else if(userData.skills.length === 0) {
       setError('Necessário inserir pelo menos uma habilidade');
     } else {
@@ -76,30 +80,30 @@ export default function EditProfile(props: any) {
   }
 
   return (
-    <div className="z-50 fixed top-0 left-0 w-full flex items-start justify-center bg-black/80 px-3 sm:px-0 overflow-y-auto h-full">
-      <div className="w-full lex flex-col justify-center items-center bg-gray-500 min-h-screen relative border-white border-2 pb-5">
-        <div className="pt-4 sm:pt-2 px-2 w-full flex justify-end top-0 right-0">
+    <div className="break-words z-50 fixed top-0 left-0 w-full flex items-start justify-center bg-dice py-2 sm:px-0 overflow-y-auto h-full">
+      <div className="break-words w-full lex flex-col justify-center items-center min-h-screen relative border-white border-2 mx-1 pb-5">
+        <div className="break-words pt-4 sm:pt-2 px-2 w-full flex justify-end top-0 right-0">
           <IoIosCloseCircleOutline
-            className="text-4xl text-white cursor-pointer"
+            className="break-words text-4xl text-white cursor-pointer hover:text-violet-500 duration-500 transition-colors"
             onClick={() => props.setShowEditProfile(false) }
           />
         </div>
-        <div className="px-6 sm:px-10 w-full">
-          <div className="w-full overflow-y-auto flex flex-col justify-center items-center mt-2 mb-10">
-            <div className="w-full text-white text-2xl pb-3 font-bold text-center mt-2 mb-2">
+        <div className="break-words px-4 sm:px-10 w-full">
+          <div className="break-words w-full overflow-y-auto flex flex-col justify-center items-center mt-2 mb-10">
+            <div className="break-words w-full text-white text-2xl pb-3 font-bold text-center mt-2 mb-2">
               Editar Perfil
             </div>
             {
               userData.typeUser === 'developer'
-              ? <div className="w-full">
-                <label htmlFor="firstName" className="mb-4 flex flex-col items-center w-full">
-                  <p className="w-full mb-1">Nome</p>
+              ? <div className="break-words w-full">
+                <label htmlFor="firstName" className="break-words mb-4 flex flex-col items-center w-full">
+                  <p className="break-words w-full mb-1 text-white">Nome</p>
                   <input
                     type="text"
                     id="firstName"
                     value={ userData.firstName }
                     placeholder="Nome"
-                    className="bg-white w-full p-3 cursor-pointer text-black text-center"
+                    className="break-words bg-black border border-violet-500 w-full p-3 cursor-pointer text-white text-center"
                     onChange={(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
                       setUserData({
                         ...userData,
@@ -108,13 +112,13 @@ export default function EditProfile(props: any) {
                     }}
                   />
                 </label>
-                <label htmlFor="lastName" className="mb-4 flex flex-col items-center w-full">
-                  <p className="w-full mb-1">Sobrenome</p>
+                <label htmlFor="lastName" className="break-words mb-4 flex flex-col items-center w-full">
+                  <p className="break-words w-full mb-1 text-white">Sobrenome</p>
                   <input
                     type="text"
                     id="lastName"
                     value={ userData.lastName }
-                    className="bg-white w-full p-3 cursor-pointer text-black text-center"
+                    className="break-words bg-black border border-violet-500 w-full p-3 cursor-pointer text-white text-center"
                     placeholder="Sobrenome"
                     onChange={(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
                       setUserData({
@@ -125,14 +129,14 @@ export default function EditProfile(props: any) {
                   />
                 </label>
               </div>
-              : <label htmlFor="company" className="mb-4 flex flex-col items-center w-full">
-                  <p className="w-full mb-1">Empresa</p>
+              : <label htmlFor="company" className="break-words mb-4 flex flex-col items-center w-full">
+                  <p className="break-words w-full mb-1 text-white">Empresa</p>
                   <input
                     type="text"
                     id="company"
                     value={ userData.company }
                     placeholder="Nome da Empresa"
-                    className="bg-white w-full p-3 cursor-pointer text-black text-center"
+                    className="break-words bg-black border border-violet-500 w-full p-3 cursor-pointer text-white text-center"
                     onChange={(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
                       setUserData({
                         ...userData,
@@ -142,12 +146,13 @@ export default function EditProfile(props: any) {
                   />
                 </label>
             }
-            <label htmlFor="bio" className="mb-4 flex flex-col items-center w-full">
-              <p className="w-full mb-1">Bio</p>
+            <label htmlFor="bio" className="break-words mb-4 flex flex-col items-center w-full">
+              <p className="break-words w-full mb-1 text-white">Bio</p>
               <textarea
                 id="bio"
+                rows={7}
                 value={ userData.description }
-                className="bg-white w-full p-3 cursor-pointer text-black text-justify"
+                className="break-words bg-black border border-violet-500 w-full p-3 cursor-pointer text-white text-left sm:text-justify"
                 placeholder="Fale um pouco sobre você"
                 onChange={(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
                   setUserData({
@@ -157,12 +162,12 @@ export default function EditProfile(props: any) {
                 }}
               />
             </label>
-            <label className="mb-4 flex flex-col items-center w-full">
-                <p className="w-full mb-1">{ userData.typeUser === 'company' ? 'Categorias de Interesse' : 'Habilidades' }</p>
+            <label className="break-words mb-4 flex flex-col items-center w-full">
+                <p className="break-words w-full mb-1 text-white">{ userData.typeUser === 'company' ? 'Categorias de Interesse' : 'Habilidades' }</p>
                 { userData.typeUser === 'developer' ? 
-                  <div className="w-full flex items-center justify-center gap-2">
+                  <div className="break-words w-full flex items-center justify-center gap-2">
                     <input
-                      className="bg-white w-full p-3 cursor-pointer text-black text-center"
+                      className="break-words bg-black border border-violet-500 w-full p-3 cursor-pointer text-white text-center"
                       type="text"
                       name="linkVideo"
                       placeholder="Digite uma habilidade ou tecnologia"
@@ -174,31 +179,31 @@ export default function EditProfile(props: any) {
                     />
                     <button
                       type="button"
-                      className="cursor-pointer h-full bg-white p-3 border border-black"
+                      className="break-words cursor-pointer h-full bg-black border border-violet-500 p-3 border border-white rounded text-white"
                       onClick={addSkill}
                     >
                       +
                     </button>
                   </div>
-                  : <div className="w-full flex items-center justify-center gap-2">
+                  : <div className="break-words w-full flex items-center justify-center gap-2">
                     <select
                       id="categories"
                       onChange={(e: any) => {
                         const sanitizedValue = e.target.value.replace(/\s+/g, ' ');
                         setProvCat(sanitizedValue);
                       }}
-                      value={provCat} className='bg-white w-full p-3 cursor-pointer text-black text-center capitalize'
+                      value={provCat} className='bg-black border border-violet-500 w-full p-3 cursor-pointer text-white text-center capitalize'
                     >
                       <option disabled value="">Selecione uma Categoria </option>
                       {
                         listCategories.map((cat: any, index: number) => (
-                          <option key={index} value={cat} className="capitalize"> {cat} </option>    
+                          <option key={index} value={cat} className="break-words capitalize"> {cat} </option>    
                         ))
                       }
                     </select>
                     <button
                       type="button"
-                      className="cursor-pointer h-full bg-white p-3 border border-black"
+                      className="break-words cursor-pointer h-full bg-black border border-violet-500 p-3 border border-white rounded text-white"
                       onClick={addCategory}>
                       +
                     </button>
@@ -206,49 +211,38 @@ export default function EditProfile(props: any) {
                 }
                 {
                   userData && userData.skills && userData.skills.map((optionSkill: any, index: number) => (
-                    <div key={index} className="bg-white text-black capitalize w-full flex items-center justify-between mt-2 p-2">
+                    <div key={index} className="break-words bg-black border border-violet-500 text-white capitalize w-full flex items-center justify-between mt-2 p-2">
                       { optionSkill }
                       <MdDelete
-                        className="cursor-pointer"
-                        onClick={() => removeSkill(optionSkill)}
-                      />
-                    </div>
-                  ))
-                }
-                {
-                  userData && userData.skills && userData.skills.map((optionSkill: any, index: number) => (
-                    <div key={index} className="bg-white text-black capitalize w-full flex items-center justify-between mt-2 p-2">
-                      { optionSkill }
-                      <MdDelete
-                        className="cursor-pointer"
+                        className="break-words cursor-pointer"
                         onClick={() => removeSkill(optionSkill)}
                       />
                     </div>
                   ))
                 }
             </label>
-            <div className="grid grid-cols-2 w-full gap-3">
+            <div className="break-words grid grid-cols-2 w-full gap-3">
               <button
-              className={`text-white bg-black hover:border-red-800 transition-colors cursor-pointer' } border-2 border-white w-full p-2 mt-6 font-bold`}
+              className="break-words text-white hover:text-red-500 transition-colors cursor-pointer border-2 border-red-500 w-full p-2 mt-6 font-bold bg-black"
               onClick={() => props.setShowEditProfile(false) }
               >
               Cancelar
               </button>
               <button
-                className={`text-white bg-black hover:border-red-800 transition-colors cursor-pointer' } border-2 border-white w-full p-2 mt-6 font-bold`}
+                className="break-words text-white hover:text-green-500 transition-colors cursor-pointer border-2 border-green-500 w-full p-2 mt-6 font-bold bg-black"
                 onClick={ updateUser }
               >
                   Salvar
               </button>
             </div>
             {
-              error !== '' && <div className="text-white pt-4 pb-3 text-center">{ error }</div>
+              error !== '' && <div className="break-words text-white pt-4 pb-3 text-center">{ error }</div>
             }
           </div>
           {
             loading
-            && <div className="bg-black/80 text-white flex items-center justify-center flex-col my-5">
-              <span className="loader z-50" />
+            && <div className="break-words bg-black/80 text-white flex items-center justify-center flex-col my-5">
+              <span className="break-words loader z-50" />
             </div>
           }
         </div>    

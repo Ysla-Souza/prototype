@@ -14,9 +14,10 @@ export default function SwiperImages(props : { list: any[] }) {
         modules={[Autoplay]}
         pagination={{clickable: true}}
         loop={true}
-        slidesPerView={quantSlides}
+        slidesPerView={1}
+        direction="vertical"
         autoplay={{delay: 3000 }}
-        className="w-full bg-black"
+        className="w-full bg-black h-60 sm:h-96"
       >
         {
           list && list.length > 0 && list.map((itemList: string, index: number) => (
@@ -26,7 +27,7 @@ export default function SwiperImages(props : { list: any[] }) {
                 alt={`Imagem ${index + 1} do jogo`}
                 width={1000}
                 height={1000}
-                className="w-full object-contain h-48"
+                className="w-full h-full object-contain"
               />
             </SwiperSlide>
           ))

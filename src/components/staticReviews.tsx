@@ -29,27 +29,27 @@ export default function StaticReviews(props: any) {
       {
         review >= 1
         ? <IoIosStar className="text-lg text-violet-500" />
-        : <IoIosStarOutline className="text-lg" />
+        : <IoIosStarOutline className="text-lg text-violet-500" />
       }
       {
         review >= 2
         ? <IoIosStar className="text-lg text-violet-500" />
-        : <IoIosStarOutline className="text-lg" />
+        : <IoIosStarOutline className="text-lg text-violet-500" />
       }
       {
         review >= 3
         ? <IoIosStar className="text-lg text-violet-500" />
-        : <IoIosStarOutline className="text-lg" />
+        : <IoIosStarOutline className="text-lg text-violet-500" />
       }
       {
         review >= 4
         ? <IoIosStar className="text-lg text-violet-500" />
-        : <IoIosStarOutline className="text-lg" />
+        : <IoIosStarOutline className="text-lg text-violet-500" />
       }
       {
         review === 5
         ? <IoIosStar className="text-lg text-violet-500" />
-        : <IoIosStarOutline className="text-lg" />
+        : <IoIosStarOutline className="text-lg text-violet-500" />
       }
     </div>
   );

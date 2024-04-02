@@ -5,6 +5,7 @@ import { getAllVideos } from '@/firebase/video';
 import { categories } from '@/categories';
 import { getChatsByEmail } from '@/firebase/chat';
 import { getNotificationsByEmail } from '@/firebase/notifications';
+import { getUserByEmail } from '@/firebase/user';
 
 interface IProvider { children: ReactNode }
 
@@ -12,10 +13,13 @@ export default function Provider({children }: IProvider) {
   const [showRegister, setShowRegister] = useState(false);
   const [showEdit, setShowEdit] = useState({ show: false, video: {} });
   const [showDelete, setShowDelete] = useState({ show: false, video: {} });
+  const [showChangePassword, setShowChangePassword] = useState({ show: false, user: {} });
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [showDeleteChat, setShowDeleteChat] = useState({ show: false, chat: {} });
   const [allFilteredVideos, setAllFilteredVideos] = useState<any[]>([]);
   const [allVideos, setAllVideos] = useState<any[]>([]);
   const [allChats, setAllChats] = useState<any[]>([]);
+  const [listChats, setListChats] = useState<any[]>([]);
   const [allNotifications, setAllNotifications] = useState<any[]>([]);
   const [listCategories, setListCategories] = useState<any>(categories.sort());
 
@@ -38,7 +42,10 @@ export default function Provider({children }: IProvider) {
 
   const getChats = async (email: string) => {
     const getChat = await getChatsByEmail(email);
-    if (getChat) setAllChats(getChat);
+    if (getChat) {
+      setAllChats(getChat);
+      setListChats(getChat);
+    }
   };
 
   const getNotifications = async (email: string) => {
@@ -52,8 +59,11 @@ export default function Provider({children }: IProvider) {
         showRegister, setShowRegister,
         showEdit, setShowEdit,
         showDelete, setShowDelete,
+        showChangePassword, setShowChangePassword,
+        showForgotPassword, setShowForgotPassword,
         showDeleteChat, setShowDeleteChat,
         allChats, setAllChats,
+        listChats, setListChats,
         allVideos, setAllVideos,
         allNotifications, setAllNotifications,
         allFilteredVideos, setAllFilteredVideos,
