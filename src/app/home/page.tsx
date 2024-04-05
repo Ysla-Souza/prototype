@@ -43,16 +43,16 @@ export default function Home() {
   }, []);
 
   return(
-    <div className={`w-full ${showData ? 'min-h-screen' : 'h-80vh'}`}>
+    <div className={`w-full ${showData ? 'min-h-screen' : 'h-screen'}`}>
       <Navigation name="home" />
         {
           !showData 
           ? <div className="break-words h-screen flex items-center justify-center bg-dice w-full bg-center">
               <Loading />               
             </div>       
-          : <div> 
+          : <div className=" flex items-center flex-col justify-start"> 
               <div className="break-words w-full h-35vh relative bg-dice bg-cover" />
-              <div className="break-words w-full h-full items-center justify-center flex w-wrap pb-10 py-5 px-5 bg-black">
+              <div className="break-words w-full h-full items-starts justify-center flex w-wrap pb-10 py-5 px-5 bg-black">
                 <div className="break-words w-full">
                   <div className="break-words flex flex-col sm:flex-row justify-between items-center w-full mb-5">
                     <h2 className="break-words pb-5 sm:pb-0 text-center text-white sm:text-left mt-3 text-2xl">Bem vindo!</h2>
@@ -120,7 +120,7 @@ export default function Home() {
                           >
                             { cat }
                             <IoClose
-                            className="break-words transition-colors duration-300 hover:bg-black rounded-full p-1 text-3xl cursor-pointer"
+                            className="break-words transition-colors duration-300 hover:bg-black  rounded-full p-1 text-3xl cursor-pointer"
                             onClick={() => {
                               const newArray = [...listCategories, cat];
                               setListCategories(newArray.sort());

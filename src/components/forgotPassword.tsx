@@ -16,7 +16,7 @@ export default function ForgotPassword() {
     const validate = /\S+@\S+\.\S+/;
     const vEmail = !email || !validate.test(email) || email === '';
     if (vEmail) {
-      window.alert('As senhas inseridas não conferem. Por favor, tente novamente.');
+      window.alert('Por favor, forneça um e-mail válido.');
     } else { 
       await forgotPassword(email);
       setLoading(false);
